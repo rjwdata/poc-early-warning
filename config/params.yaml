@@ -6,28 +6,9 @@ base:
 data_source:
   master: data/raw/Delawnymous_SSY_20170813.csv
 
-
 data_preparation:
-  training_db: 
-  training_db_dir:
-  schema_training: 
-  good_validated_raw_dir: 
-  bad_validated_raw_dir: 
-  TrainingArchiveBadData: 
-  Training_FileFromDB: 
-  master_csv: 
-
-pred_data_preparation:
-  prediction_db: 
-  prediction_db_dir: 
-  schema_prediction: 
-  good_validated_raw_dir: 
-  bad_validated_raw_dir: 
-  PredictionArchiveBadData: 
-  Prediction_FileFromDB:
-  master_csv: 
-  Prediction_Output_File: 
-
+  train_data_path: data/raw/train/train.csv
+  test_data_path: data/raw/test/test.csv
 
 saved_models:
   model_dir: models

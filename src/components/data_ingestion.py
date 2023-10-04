@@ -15,11 +15,29 @@ from src.components.data_transformation import DataTransformationConfig
 from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
 
+config_path = config_path = os.path.join("config", "params.yaml")
+
+def read_params(config_path):
+    with open(config_path) as yaml_file:
+        config = yaml.safe_load(yaml_file)
+    return config
+
+def get_config(config_path):
+    try:
+        config = read_params(config_path)
+        if config is None:
+            raise ValueError("Config file is empty or invalid.")
+        return config
+    except Exception as e:
+        raise CustomException(f"Error reading configuration: {str(e)}", sys)
+
+config = get_config(config_path)
+
 @dataclass
 class DataIngestionConfig:
-    train_data_path: str=os.path.join('artifacts', 'train.csv')
-    test_data_path: str=os.path.join('artifacts', 'test.csv')
-    raw_data_path: str=os.path.join('artifacts', 'data.csv')
+    train_data_path: str=config['data_preparation']['train_data_path']
+    test_data_path: str=config['data_preparation']['test_data_path']
+    raw_data_path: str=os.path.join(config['data_source']['master'])
 
 class DataIngestion:
     def __init__(self):
@@ -27,14 +45,16 @@ class DataIngestion:
 
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion method or component")
+
         try:
-            df = pd.read_csv('notebook/data/StudentsPerformance.csv')
+            df = pd.read_csv(self.ingestion_config.raw_data_path)
             logging.info('Read the data set as dataframe')
 
             df.columns = df.columns.str.replace(' ', '_').str.replace('/', '_')
             logging.info('Removed spaces and characters from column names')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
+            os.makedirs(os.path.dirname(self.ingestion_config.test_data_path), exist_ok=True)
 
             df.to_csv(self.ingestion_config.raw_data_path, index = False, header = True)
             
@@ -57,10 +77,11 @@ class DataIngestion:
         
 if __name__=="__main__":
     obj=DataIngestion()
+    config = get_config(config_path)
     train_set,test_set=obj.initiate_data_ingestion()
 
-    data_transformation=DataTransformation()
-    train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_set,test_set)
+    #data_transformation=DataTransformation()
+    #train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_set,test_set)
     
-    modeltrainer=ModelTrainer()
-    print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
+    #modeltrainer=ModelTrainer()
+    #print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
