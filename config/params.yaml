@@ -1,10 +1,10 @@
 base:
-  project:
+  project: End-to-End-ML-Poc
   random_state: 67
-  target_col: 
+  target_col: hs_diploma
 
 data_source:
-  batch_files: 
+  master: data/raw/Delawnymous_SSY_20170813.csv
 
 
 data_preparation:
