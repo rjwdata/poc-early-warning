@@ -36,7 +36,7 @@ def set_page_container_style() -> None:
 def display_sidebar_header() -> None:
 
     # Logo
-    logo = Image.open("static/logo.png")
+    logo = Image.open("src/static/logo.png")
     with st.sidebar:
         st.image(logo, use_column_width=True)
         col1, col2 = st.columns(2)
@@ -79,27 +79,6 @@ def select_project(projects: List[Text]) -> Path:
     return Path(selected_project)
 
 
-def select_period(periods: List[Text]) -> Text:
-    """
-
-    Args:
-        periods (List[Text]): List of period strings.
-
-    Raises:
-        EntityNotFoundError: If periods list is empty.
-
-    Returns:
-        Text: Dates period in format '%Y-%m-%d - %Y-%m-%d'.
-    """
-    if not periods:
-        raise EntityNotFoundError("🔍 No periods found")
-
-    selected_period: Text = st.sidebar.selectbox(
-        label="📆 Select period", options=periods, format_func=period_dir_to_dates_range
-    )
-
-    return selected_period
-
 
 def select_report(report_names: List[Text]) -> Text:
     """Select a report name from a selectbox.
@@ -124,18 +103,16 @@ def select_report(report_names: List[Text]) -> Text:
     return selected_report_name
 
 
-def display_header(project_name: Text, period: Text, report_name: Text) -> None:
+def display_header(project_name: Text, report_name: Text) -> None:
     """Display report header.
 
     Args:
         project_name (Text): Project name.
-        period (Text): Period.
         report_name (Text): Report name.
     """
-    dates_range: Text = period_dir_to_dates_range(period)
     st.caption(f"💼 Project: {project_name}")
     st.header(f"Report: {report_name}")
-    #st.caption(f"Period: {dates_range}")
+
 
 
 @st.cache_data

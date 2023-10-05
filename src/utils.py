@@ -120,7 +120,7 @@ def get_report_name(path: Path) -> Text:
     return name
 
 
-def get_reports_mapping(period_dir: Text) -> Dict[Text, Path]:
+def get_reports_mapping(reports_dir: Text) -> Dict[Text, Path]:
     """Build dictionary where human readable names corresponds to paths.
     Note: each directory gets suffix ` (folder)`.
 
@@ -156,9 +156,9 @@ def get_reports_mapping(period_dir: Text) -> Dict[Text, Path]:
     names: List[Text] = []
     paths: List[Path] = []
 
-    for filename in os.listdir(period_dir):
+    for filename in os.listdir(reports_dir):
         if not filename.startswith("."):
-            paths.append(Path(f"{period_dir}/{filename}"))
+            paths.append(Path(f"{reports_dir}/{filename}"))
     paths.sort()
 
     for path in paths:

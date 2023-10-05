@@ -8,7 +8,6 @@ from typing import Text
 from src.ui import display_header
 from src.ui import display_report
 from src.ui import display_sidebar_header
-from src.ui import select_period
 from src.ui import select_project
 from src.ui import select_report
 from src.ui import set_page_container_style
@@ -16,8 +15,8 @@ from src.utils import EntityNotFoundError
 from src.utils import get_reports_mapping
 from src.utils import list_periods
 
-PROJECTS_DIR: Path = Path("../poc-early-warning")
-REPORTS_DIR_NAME: Text = "artifacts"
+PROJECTS_DIR: Path = Path("../")
+REPORTS_DIR_NAME: Text = "reports"
 
 
 if __name__ == "__main__":
@@ -47,15 +46,14 @@ if __name__ == "__main__":
 
         # Sidebar: Select report (UI)
 
-        report_mapping: Dict[Text, Path] = get_reports_mapping(period_dir)
+        report_mapping: Dict[Text, Path] = get_reports_mapping(reports_dir)
         selected_report_name: Text = select_report(report_mapping)
         selected_report: Path = report_mapping[selected_report_name]
 
         # Display report header (UI)
         display_header(
             project_name=selected_project.name,
-            period=selected_period,
-            report_name=selected_report_name,
+            report_name=selected_report_name
         )
         # Display selected report(UI)
         display_report(selected_report)
