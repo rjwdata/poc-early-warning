@@ -135,7 +135,7 @@ def display_header(project_name: Text, period: Text, report_name: Text) -> None:
     dates_range: Text = period_dir_to_dates_range(period)
     st.caption(f"💼 Project: {project_name}")
     st.header(f"Report: {report_name}")
-    st.caption(f"Period: {dates_range}")
+    #st.caption(f"Period: {dates_range}")
 
 
 @st.cache_data

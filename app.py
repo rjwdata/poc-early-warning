@@ -16,8 +16,8 @@ from src.utils import EntityNotFoundError
 from src.utils import get_reports_mapping
 from src.utils import list_periods
 
-PROJECTS_DIR: Path = Path("../projects")
-REPORTS_DIR_NAME: Text = "reports"
+PROJECTS_DIR: Path = Path("../poc-early-warning")
+REPORTS_DIR_NAME: Text = "artifacts"
 
 
 if __name__ == "__main__":
@@ -41,9 +41,9 @@ if __name__ == "__main__":
         reports_dir: Path = selected_project / REPORTS_DIR_NAME
 
         # Sidebar: Select period
-        periods: List[Text] = list_periods(reports_dir)
-        selected_period: Text = select_period(periods)
-        period_dir: Path = reports_dir / selected_period
+        #periods: List[Text] = list_periods(reports_dir)
+        #selected_period: Text = select_period(periods)
+        #period_dir: Path = reports_dir / selected_period
 
         # Sidebar: Select report (UI)
 

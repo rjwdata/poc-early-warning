@@ -66,6 +66,8 @@ class DataIngestion:
             df.columns = df.columns.str.replace(' ', '_').str.replace('/', '_')
             logging.info('Removed spaces and characters from column names')
 
+            os.makedirs(os.path.dirname(self.ingestion_config.eda_report_path), exist_ok=True)
+
             logging.info('creating data quality report')
             data_quality_report = Report(metrics=[
                  DataQualityPreset()
