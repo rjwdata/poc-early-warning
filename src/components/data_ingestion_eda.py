@@ -15,6 +15,18 @@ from src.components.data_transformation import DataTransformationConfig
 from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
 
+from evidently import ColumnMapping
+
+from evidently.report import Report
+from evidently.metrics.base_metric import generate_column_metrics
+from evidently.metric_preset import DataDriftPreset, TargetDriftPreset, DataQualityPreset, RegressionPreset
+from evidently.metrics import *
+
+from evidently.test_suite import TestSuite
+from evidently.tests.base_test import generate_column_tests
+from evidently.test_preset import DataStabilityTestPreset,NoTargetPerformanceTestPreset, RegressionTestPreset, DataQualityTestPreset
+from evidently.tests import *
+
 config_path = config_path = os.path.join("config", "params.yaml")
 
 def read_params(config_path):
@@ -38,6 +50,7 @@ class DataIngestionConfig:
     train_data_path: str=config['data_preparation']['train_data_path']
     test_data_path: str=config['data_preparation']['test_data_path']
     raw_data_path: str=os.path.join(config['data_source']['master'])
+    eda_report_path: str=os.path.join(config['data_preparation']['eda_report_path'])
 
 class DataIngestion:
     def __init__(self):
@@ -52,6 +65,20 @@ class DataIngestion:
 
             df.columns = df.columns.str.replace(' ', '_').str.replace('/', '_')
             logging.info('Removed spaces and characters from column names')
+
+            logging.info('creating data quality report')
+            data_quality_report = Report(metrics=[
+                 DataQualityPreset()
+                 ])
+            data_quality_report.run(current_data=df, reference_data = None, column_mapping=None)
+            data_quality_report.save_html(os.path.join(self.ingestion_config.eda_report_path,'data_quality_report.html'))
+            
+            logging.info('creating data quality tests')
+            data_quality_test_suite = TestSuite(tests=[
+                 DataQualityTestPreset(),
+                 ])
+            data_quality_test_suite.run(current_data=df, reference_data = None, column_mapping=None)
+            data_quality_test_suite.save_html(os.path.join(self.ingestion_config.eda_report_path,'data_quality_test.html'))
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
             os.makedirs(os.path.dirname(self.ingestion_config.test_data_path), exist_ok=True)
