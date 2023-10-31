@@ -15,7 +15,7 @@ from src.utils import EntityNotFoundError
 from src.utils import get_reports_mapping
 from src.utils import list_periods
 
-PROJECTS_DIR: Path = Path("../")
+PROJECTS_DIR: Path = Path("../poc-early-warning/")
 REPORTS_DIR_NAME: Text = "reports"
 
 
@@ -25,10 +25,7 @@ if __name__ == "__main__":
     set_page_container_style()
 
     # Extract available project names and reports directory name
-    projects: List[Text] = []
-    for path in os.listdir(PROJECTS_DIR):
-        if not path.startswith("."):
-            projects.append(path)
+    projects: List[Text] = ['reports']
 
     try:
 
@@ -37,7 +34,7 @@ if __name__ == "__main__":
 
         # Sidebar: Select project (UI) and build reports directory path
         selected_project: Path = PROJECTS_DIR / select_project(projects)
-        reports_dir: Path = selected_project / REPORTS_DIR_NAME
+        reports_dir: Path = REPORTS_DIR_NAME
 
         # Sidebar: Select period
         #periods: List[Text] = list_periods(reports_dir)
