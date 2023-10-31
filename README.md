@@ -46,7 +46,7 @@ Data columns (total 16 columns):
 |14  |scale_score_11_comp  |43012 non-null  |float64
 |15  |hs_diploma           |52942 non-null  |int64 
 
-Data quality checks and exploratory data analysis was conducted to determine what transformations the data may need prior to modeling. 
+Data quality checks and exploratory data analysis were conducted to determine what transformations the data may need prior to modeling. 
 ## Data Transformation
 
 Once the variables or features were analyzed, transfomrations we created to deal with the following issues:
