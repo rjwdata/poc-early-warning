@@ -49,7 +49,7 @@ Data columns (total 16 columns):
 Data quality checks and exploratory data analysis were conducted to determine what transformations the data may need prior to modeling. 
 ## Data Transformation
 
-Once the variables or features were analyzed, transfomrations we created to deal with the following issues:
+Once the variables or features were analyzed, transfomrations were identified to deal with the following issues:
 -  Class Imbalance
 -  Categorical features
 -  Numerical features with different scales
