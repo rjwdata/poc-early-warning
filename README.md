@@ -145,4 +145,4 @@ The model was tuned, using the above combinations of parameters and identifed th
 |reg_lambda | 0.0067382
 |random_state | 42
 
-This model was to create the Model Card highlight the model quality metrics.  The dashboard can be found [here](https://rjw-data-poc-early-warning.streamlit.app). 
+This model was to create the Model Card highlight the model quality metrics.  The dashboard can be found [here](https://rjw-data-poc-early-warning.streamlit.app). Select `Model Card` as report to review the metrics.  
