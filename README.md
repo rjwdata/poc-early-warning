@@ -22,7 +22,7 @@ This approach is applicable to a wide range of classification problems, offering
 
 The data comes from the Strategic Data Project in the Center of Educational Policy Research at Harvard University.  The data is sythentic and is used to test different educational analytic techniques. 
 
-In the case of this project, the data is the form of a `.csv` file, but can be updated to directly pull from SQL database. 
+In the case of this project, the data is the form of a `.csv` file, but can be updated to directly pull from a SQL database. 
 
 The data was loaded and variables were selected based on the revelant research of high school dropouts.  These are 16 variables and `hs_diploma` is the target variable.  
 
