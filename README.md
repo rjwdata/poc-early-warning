@@ -1,16 +1,16 @@
 
 # Proof of Concept - Early Warning System
 
-## Predictive Learning of Student Dropout
-
-
+## Predictive Modeling of Earning a HS Diploma
 
 ## Overview
-Currently we create At-Risk indicators as an one-size fits all system.  For attendance, we look at students below 90%, in grades we look at number of D's and F's, and in discipline we look at the number of supsensions.  In addition, we don't define what the student is at-risk for - is graduation, getting into college, doing well on college placement test?  The answer is we do not know.  
+Currently, we employ a one-size-fits-all system for identifying at-risk students, using indicators such as attendance below 90%, the number of D's and F's in grades, and the frequency of suspensions in discipline records. However, this approach lacks specificity regarding what students are at risk of, be it graduation, college admission, or success on college placement tests.
 
-The purpose of project is use client data to create indicators to predict student's risk of an outcome.  In the case of this project, we are looking at student graduation, but this can serve as template and be used across different products and outcomes (continuous vs. binary vs. multiclass).
+The primary purpose of project is to leverage client data to create individualized indicators of students at-risk of not graduating.  This versatile framework which can serve as a template for predicting various outcomes whether they are continuous, binary, or multiclass.
 
-In addition to prediction on outcomes, the project also produces data and model quality metrics to provide transparency on the data and model used to create the predictions.  The data and model quality reports can be found [here](https://rjw-data-poc-early-warning.streamlit.app).    
+Additional,  the project also poduces quality metrics to enhance transparency in both the data and model used to generate the predictions.  You can access the data and model quality reports [here](https://rjw-data-poc-early-warning.streamlit.app). 
+
+This approach is applicable to a wide range of classification problems, offering scalability for different areas seeking to incorporate predictive analytics.
 
 ## Approach
 
@@ -20,11 +20,11 @@ In addition to prediction on outcomes, the project also produces data and model 
 -  Model Tuning
 ## Data Ingestion
 
-The data comes from the Strategic Data Project from the Center of Educational Policy Research at Harvard University.  The data is sythentic and is used to test different educational analytics. 
+The data comes from the Strategic Data Project in the Center of Educational Policy Research at Harvard University.  The data is sythentic and is used to test different educational analytic techniques. 
 
 In the case of this project, the data is the form of an `.csv` file, but can be updated to directly pull from SQL database. 
 
-The data was loaded and variables were selected based on the revelant research of high school dropouts.  These are the 16 variables and `hs_diploma` is the target variable.  
+The data was loaded and variables were selected based on the revelant research of high school dropouts.  These are 16 variables and `hs_diploma` is the target variable.  
 
 Data columns (total 16 columns):
 | # |  Column               |Non-Null Count  |Dtype  
@@ -84,8 +84,11 @@ The numerical features are all on different scales, so we need to transform the 
 The type of modeling problem we have is a binary classification problem.  Classification algorithms were selected and to test against the dataset to see which classification algorithm had the best performance in terms of Accuracy, Precision and Recall.  In addition, to models we also tested different datasets to see the impact of class imbalance on the datasets.  The results of model training are below.
 
 ### Imbalanced Data  
+The data is shows class imbalance of `hs_diploma` and would benefit by training models on different class imbalance approaches
 ### Random Oversample
+In this technique, we increased the minority class, does not have `hs_diploma`, so the number of graduates equals the number of non-graduates.  
 ### Random Undersample
+In this technique, we decreased the majority class, has `hs_diploma`, so the number of graduates equals the number of non-graduates.  
 
 The best performing model was the XBboost.  
 
@@ -107,8 +110,6 @@ The best performing model was the XBboost.
 Feature importance was also provided from XGBoost.  The following is a rank order of importance of the features in the model:
 
 ![Feature Importance](src/static/feature_importance.png)
-
-
 
 
 ## Model Tuning
