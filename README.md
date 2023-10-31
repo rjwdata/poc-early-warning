@@ -8,7 +8,7 @@ Currently, we employ a one-size-fits-all system for identifying at-risk students
 
 The primary purpose of project is to leverage client data to create individualized indicators of students at-risk of not graduating.  This versatile framework which can serve as a template for predicting various outcomes whether they are continuous, binary, or multiclass.
 
-Additional,  the project also poduces quality metrics to enhance transparency in both the data and model used to generate the predictions.  You can access the data and model quality reports [here](https://rjw-data-poc-early-warning.streamlit.app). 
+Additionally,  the project also poduces quality metrics to enhance transparency in both the data and model used to generate the predictions.  You can access the data and model quality reports [here](https://rjw-data-poc-early-warning.streamlit.app). 
 
 This approach is applicable to a wide range of classification problems, offering scalability for different areas seeking to incorporate predictive analytics.
 
