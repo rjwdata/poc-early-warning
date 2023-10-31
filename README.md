@@ -55,7 +55,7 @@ Once the variables or features were analyzed, transformations were identified to
 -  Numerical features with different scales
 
 ### Class Imbalance
-Class imbalance may be a potential issue, because only 20% of records are students who did not graduate. Therefore we need to consider this in our modeling.  To account for the class imbalnace.three different datasets were created to be used in modeling - 1) Imbalanced data set, Random Oversample, and Random Undersample.
+Class imbalance may be a potential issue, because only 20% of records are students who did not graduate. Therefore we need to consider this in our modeling.  To account for the class imbalance, three different datasets were created to be used in modeling - 1) Imbalanced data set, Random Oversample, and Random Undersample.
 
 ### Categorical features
 To deal with categorical features, we need to transform the categorical data.  To do this, we created dummy variables for all of the categorical features:
