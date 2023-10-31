@@ -4,7 +4,7 @@ base:
   target_col: hs_diploma
 
 data_source:
-  master: data/raw/Delawnymous_SSY_20170813.csv
+  master: data/raw/training_2009.csv
 
 data_preparation:
   train_data_path: data/raw/train/train.csv
