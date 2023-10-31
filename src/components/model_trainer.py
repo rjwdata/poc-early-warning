@@ -1,3 +1,7 @@
+### regression
+### needs updating - question is whether we select on tuned model or type of model 
+### tuning parameters may need to be updated on project
+
 import os
 import sys
 import pandas as pd
