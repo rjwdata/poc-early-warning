@@ -32,36 +32,36 @@ def save_object(file_path, obj):
         raise CustomException(e, sys)
 
 ### This function needs to be updated on a case by case basis     
-#def evaluate_models(X_train, y_train, X_test, y_test, models, param):
-#    try:
-#        report = {}
-#
-#        for i in range(len(list(models))):
-#            model = list(models.values())[i]
-#            para=param[list(models.keys())[i]]
-#
-#            gs = GridSearchCV(model,para,cv=3)
-#            gs.fit(X_train,y_train)
-#
-#            model.set_params(**gs.best_params_)
-#            model.fit(X_train,y_train)
-#
-#            model.fit(X_train, y_train)
-#
-#            y_train_pred = model.predict(X_train)
-#
-#            y_test_pred = model.predict(X_test)
-#
-#            train_model_score = r2_score(y_train, y_train_pred)
-#
-#            test_model_score = r2_score(y_test, y_test_pred)
-#
-#            report[list(models.keys())[i]] = test_model_score
-#
-#        return report
-#
-#    except Exception as e:
-#        raise CustomException(e, sys)
+def evaluate_models(X_train, y_train, X_test, y_test, models, param):
+    try:
+        accuracy, precision, recall = {}, {}, {}
+
+        for key in models.keys():
+            if models[key] == 0:
+                #baseline
+                predictions = np.ones(len(y_test))
+                accuracy[key] = accuracy_score(predictions, y_test)
+                precision[key] = precision_score(predictions, y_test)
+                recall[key] = recall_score(predictions, y_test)
+            elif models[key] != 0:
+                # Fit the classifier
+                models[key].fit(X_train_ros, y_train_ros)
+                # Make predictions
+                predictions = models[key].predict(X_test)
+                # Calculate metrics
+                accuracy[key] = accuracy_score(predictions, y_test)
+                precision[key] = precision_score(predictions, y_test)
+                recall[key] = recall_score(predictions, y_test)
+        
+        df_model = pd.DataFrame(index=models.keys(), columns=['Accuracy', 'Precision', 'Recall'])
+        df_model['Accuracy'] = accuracy.values()
+        df_model['Precision'] = precision.values()
+        df_model['Recall'] = recall.values()
+
+        return df_model
+
+    except Exception as e:
+        raise CustomException(e, sys)
     
 def load_object(file_path):
     try:
@@ -70,7 +70,9 @@ def load_object(file_path):
 
     except Exception as e:
         raise CustomException(e, sys)
-    
+
+
+## streamlit app functions     
 def list_periods(reports_dir: Path) -> List[Text]:
     """List periods subdirectories inside reports directory.
 
