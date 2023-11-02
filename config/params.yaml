@@ -38,6 +38,16 @@ artifacts_dir:
   general: general
   mlflow: mlflow_artifacts
   
+models:
+  logistic_regression: LogisticRegression()
+  svc: LinearSVC()
+  decision_tree: DecisionTreeClassifier()
+  random_forest: RandomForestClassifier()
+  naive_bayes: GaussianNB()
+  knn: KNeighborsClassifer()
+  xgboost: xgb.XGBClassifier(objective="binary:logistic", random_state=42)
+
+
 training:
   random_forest:
     cv: 5
