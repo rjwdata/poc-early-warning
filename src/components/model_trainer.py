@@ -19,7 +19,7 @@ import xgboost as xgb
 from src.exception import CustomException
 from src.logger import logging
 
-from src.utils import save_object,evaluate_models
+from src.utils import save_object, evaluate_models
 
 @dataclass
 class ModelTrainerConfig:
@@ -49,9 +49,8 @@ class ModelTrainer:
                 'K-Nearest Neighbor': KNeighborsClassifier(),
                 'xgboost': xgb.XGBClassifier(objective="binary:logistic", random_state=42)
             }
-            params={}
 
-            all_models_results, best_model = self.evaluate_models(X_train, y_train, models, X_test, y_test)
+            all_models_results, best_model = evaluate_models(X_train, y_train, models, X_test, y_test)
             
             ## To get best model score from dict
             print(all_models_results)

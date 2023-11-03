@@ -14,6 +14,8 @@ from typing import Dict
 from typing import List
 from typing import Text
 
+from src.exception import CustomException
+from src.logger import logging
 
 class EntityNotFoundError(Exception):
     """EntityNotFoundError"""
@@ -33,7 +35,7 @@ def save_object(file_path, obj):
         raise CustomException(e, sys)
 
 ### This function needs to be updated on a case by case basis     
-def evaluate_models(X_train, y_train, X_test, y_test, models):
+def evaluate_models(X_train, y_train, models, X_test, y_test):
     try:
         all_models_results = {}
         best_model = None
@@ -42,10 +44,14 @@ def evaluate_models(X_train, y_train, X_test, y_test, models):
         for model_name, model in models.items():
             if model == 0:
                 #baseline
-                predictions = np.ones(len(y_test))
-                accuracy = accuracy_score(predictions, y_test)
-                precision = precision_score(predictions, y_test)
-                recall = recall_score(predictions, y_test)
+                train_predictions = np.ones(len(y_train))
+                accuracy = accuracy_score(train_predictions, y_train)
+                precision = precision_score(train_predictions, y_train)
+                recall = recall_score(train_predictions, y_train)
+                test_predictions = np.ones(len(y_test))
+                test_accuracy = accuracy_score(test_predictions, y_test)
+                test_precision = precision_score(test_predictions, y_test)
+                test_recall = recall_score(test_predictions, y_test)
             else:
                 cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=67)
                 accuracy_scores = cross_val_score(model, X_train, y_train, cv = cv, scoring = 'accuracy')
@@ -76,7 +82,6 @@ def evaluate_models(X_train, y_train, X_test, y_test, models):
             if accuracy > best_accuracy:
                 best_accuracy = accuracy
                 logging.info(f"{model_name} with an accuracy {best_accuracy}")
-                l
                 best_model = {
                     "name": model_name,
                     "model": model,
@@ -87,7 +92,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models):
                     "test_precision": test_precision,
                     "test_recall": test_recall
                 }
-
+            
         return all_models_results, best_model
 
     except Exception as e:
