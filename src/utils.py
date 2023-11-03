@@ -91,7 +91,8 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
 
             if test_accuracy > best_accuracy:
                 best_accuracy = test_accuracy
-                best_model = {
+                best_model = model
+                best_model_stats = {
                     "name": model_name,
                     "accuracy": accuracy,
                     "precision": precision,
@@ -102,7 +103,7 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                     "training_time": training_time
                 }
             
-        return all_models_results, best_model
+        return all_models_results, best_model_stats, best_model
 
     except Exception as e:
         raise CustomException(e, sys)

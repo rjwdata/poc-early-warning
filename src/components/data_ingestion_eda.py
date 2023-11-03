@@ -14,6 +14,7 @@ from src.components.data_transformation import DataTransformation
 from src.components.data_transformation import DataTransformationConfig
 from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
+from src.pipeline.predict_pipeline import PredictPipeline
 
 from evidently import ColumnMapping
 
@@ -28,6 +29,25 @@ from evidently.test_preset import DataStabilityTestPreset,NoTargetPerformanceTes
 from evidently.tests import *
 
 config_path = config_path = os.path.join("config", "params.yaml")
+
+features = {
+    'male': 'male',
+    'race_ethnicity': 'white', 
+    'frpl': 'yes_frlp', 
+    'iep': 'no_iep', 
+    'ell': 'no_ell', 
+    'ever_alternative':'yes_alt',
+    'ap_ever_take_class': 'yes_ap',
+    'math_ss': 75.0, 
+    'read_ss': 75.0, 
+    'pct_days_absent': 7.5, 
+    'gpa': 3.33, 
+    'scale_score_11_eng': 18.0,
+    'scale_score_11_math': 22.0, 
+    'scale_score_11_read': 22.0, 
+    'scale_score_11_comp': 24.0
+    }
+data = pd.DataFrame(features,index=[0])
 
 def read_params(config_path):
     with open(config_path) as yaml_file:
@@ -114,3 +134,6 @@ if __name__== "__main__":
     
     modeltrainer=ModelTrainer()
     print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
+
+    predictpipeline = PredictPipeline()
+    print(predictpipeline.predict(data))

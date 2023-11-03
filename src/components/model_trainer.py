@@ -51,11 +51,11 @@ class ModelTrainer:
             }
 
 
-            all_models_results, best_model = evaluate_models(X_train, y_train, models, X_test, y_test)
+            all_models_results, best_model_stats, best_model = evaluate_models(X_train, y_train, models, X_test, y_test)
             
             ## To get best model score from dict
             pretty_all_models = json.dumps(all_models_results, indent=4)
-            pretty_best_model = json.dumps(best_model, indent=4)
+            pretty_best_model = json.dumps(best_model_stats, indent=4)
 
             print(pretty_all_models)
             print(pretty_best_model)
