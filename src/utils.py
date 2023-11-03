@@ -91,8 +91,6 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
 
             if test_accuracy > best_accuracy:
                 best_accuracy = test_accuracy
-                print(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
-                logging.info(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
                 best_model = {
                     "name": model_name,
                     "accuracy": accuracy,
@@ -100,7 +98,8 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                     "recall": recall,
                     "test_accuracy": test_accuracy,
                     "test_precision": test_precision,
-                    "test_recall": test_recall
+                    "test_recall": test_recall,
+                    "training_time": training_time
                 }
             
         return all_models_results, best_model
