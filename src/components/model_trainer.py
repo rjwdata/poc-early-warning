@@ -6,7 +6,7 @@ import os
 import sys
 import pandas as pd
 from dataclasses import dataclass
-
+import json
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
@@ -41,8 +41,8 @@ class ModelTrainer:
             )
             models = {
                 'Baseline': 0,
-                'Logistic Regression': LogisticRegression(),
-                'Support Vector Machines': LinearSVC(),
+                'Logistic Regression': LogisticRegression(max_iter = 1000),
+                'Support Vector Machines': LinearSVC(dual='auto'),
                 'Decision Trees': DecisionTreeClassifier(),
                 'Random Forest': RandomForestClassifier(),
                 'Naive Bayes': GaussianNB(),
@@ -50,11 +50,12 @@ class ModelTrainer:
                 'xgboost': xgb.XGBClassifier(objective="binary:logistic", random_state=42)
             }
 
+
             all_models_results, best_model = evaluate_models(X_train, y_train, models, X_test, y_test)
             
             ## To get best model score from dict
-            print(all_models_results)
-            print(best_model)
+            pretty_all_models = json.dumps(all_models_results, indent=4)
+            pretty_best_model = json.dumps(best_model, indent=4)
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,

@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 import numpy as np 
 import pandas as pd
@@ -44,7 +45,10 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
         for model_name, model in models.items():
             if model == 0:
                 #baseline
+                start_time = time.time()
                 train_predictions = np.ones(len(y_train))
+                end_time = time.time()
+                training_time = end_time - start_time
                 accuracy = accuracy_score(train_predictions, y_train)
                 precision = precision_score(train_predictions, y_train)
                 recall = recall_score(train_predictions, y_train)
@@ -53,7 +57,10 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                 test_precision = precision_score(test_predictions, y_test)
                 test_recall = recall_score(test_predictions, y_test)
             else:
+                start_time = time.time()
                 cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=67)
+                end_time = time.time()
+                training_time = end_time - start_time
                 accuracy_scores = cross_val_score(model, X_train, y_train, cv = cv, scoring = 'accuracy')
                 precision_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring='precision')
                 recall_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring='recall')
@@ -76,15 +83,19 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                 "recall": recall,
                 "test_accuracy": test_accuracy,
                 "test_precision": test_precision,
-                "test_recall": test_recall
+                "test_recall": test_recall,
+                "training_time": training_time
             }
+            
+            print(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
+            logging.info(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
 
-            if accuracy > best_accuracy:
-                best_accuracy = accuracy
-                logging.info(f"{model_name} with an accuracy {best_accuracy}")
+            if test_accuracy > best_accuracy:
+                best_accuracy = test_accuracy
+                print(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
+                logging.info(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
                 best_model = {
                     "name": model_name,
-                    "model": model,
                     "accuracy": accuracy,
                     "precision": precision,
                     "recall": recall,
