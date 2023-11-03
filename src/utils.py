@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import dill
 import pickle
-from sklearn.metrics import r2_score
-from sklearn.model_selection import GridSearchCV
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 from pathlib import Path
 from typing import Dict
@@ -32,7 +32,7 @@ def save_object(file_path, obj):
         raise CustomException(e, sys)
 
 ### This function needs to be updated on a case by case basis     
-def evaluate_models(X_train, y_train, X_test, y_test, models, param):
+def evaluate_models(X_train, y_train, X_test, y_test, models):
     try:
         accuracy, precision, recall = {}, {}, {}
 
@@ -45,7 +45,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param):
                 recall[key] = recall_score(predictions, y_test)
             elif models[key] != 0:
                 # Fit the classifier
-                models[key].fit(X_train_ros, y_train_ros)
+                models[key].fit(X_train, y_train)
                 # Make predictions
                 predictions = models[key].predict(X_test)
                 # Calculate metrics

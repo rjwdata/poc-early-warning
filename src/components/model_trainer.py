@@ -16,8 +16,6 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 import xgboost as xgb
 
-from sklearn.metrics import accuracy_score, precision_score, recall_score
-
 from src.exception import CustomException
 from src.logger import logging
 
@@ -53,37 +51,38 @@ class ModelTrainer:
             }
             params={}
 
-            model_report:dict=evaluate_models(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
+            model_report =evaluate_models(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
                                              models=models)
             
             ## To get best model score from dict
-            best_model_score = max(sorted(model_report.values()))
+            print(model_report)
 
-            ## To get best model name from dict
+            ## To get best model name from df
+            max_index = model_report['Accuracy'].idxmax()
+            max_value = model_report['Accuracy'].max()
 
-            best_model_name = list(model_report.keys())[
-                list(model_report.values()).index(best_model_score)
-            ]
-            best_model = models[best_model_name]
+            
+            best_model = models[max_index]
 
-            if best_model_score<0.6:
+            if max_value < 0.6:
                 raise CustomException("No best model found")
             logging.info(f"Best found model on both training and testing dataset")
+            logging.info(f'{max_index} with an accruacy of {max_value}')
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
             )
 
-            predicted=best_model.predict(X_test)
+            #predicted=best_model.predict(X_test)
 
-            r2_square = r2_score(y_test, predicted)
-            feature_names = ['gender', 'race/ethnicity', 'parental_level_of_education',
-                             'lunch','test_preparation_course', 'reading_score', 'writing_score']
-            coefs = pd.DataFrame(
-                  best_model.coef_,
-                  columns=["Coefficients"])
-            return r2_square, coefs
+            #r2_square = r2_score(y_test, predicted)
+            #feature_names = ['gender', 'race/ethnicity', 'parental_level_of_education',
+            #                 'lunch','test_preparation_course', 'reading_score', 'writing_score']
+            #coefs = pd.DataFrame(
+            #      best_model.coef_,
+            #      columns=["Coefficients"])
+            #return r2_square, coefs
                 
         except Exception as e:
             raise CustomException(e,sys)
