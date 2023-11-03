@@ -79,7 +79,7 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                 logging.info(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
 
             all_models_results[model_name] = {
-                "model_name": mode_name,
+                "model_name": model_name,
                 "accuracy": accuracy,
                 "precision": precision,
                 "recall": recall,

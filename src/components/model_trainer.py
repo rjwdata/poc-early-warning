@@ -57,6 +57,9 @@ class ModelTrainer:
             pretty_all_models = json.dumps(all_models_results, indent=4)
             pretty_best_model = json.dumps(best_model, indent=4)
 
+            print(pretty_all_models)
+            print(pretty_best_model)
+
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
