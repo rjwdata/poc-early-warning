@@ -51,38 +51,16 @@ class ModelTrainer:
             }
             params={}
 
-            model_report =evaluate_models(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
-                                             models=models)
+            all_models_results, best_model = self.evaluate_models(X_train, y_train, models, X_test, y_test)
             
             ## To get best model score from dict
-            print(model_report)
-
-            ## To get best model name from df
-            max_index = model_report['Accuracy'].idxmax()
-            max_value = model_report['Accuracy'].max()
-
-            
-            best_model = models[max_index]
-
-            if max_value < 0.6:
-                raise CustomException("No best model found")
-            logging.info(f"Best found model on both training and testing dataset")
-            logging.info(f'{max_index} with an accruacy of {max_value}')
+            print(all_models_results)
+            print(best_model)
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
             )
-
-            #predicted=best_model.predict(X_test)
-
-            #r2_square = r2_score(y_test, predicted)
-            #feature_names = ['gender', 'race/ethnicity', 'parental_level_of_education',
-            #                 'lunch','test_preparation_course', 'reading_score', 'writing_score']
-            #coefs = pd.DataFrame(
-            #      best_model.coef_,
-            #      columns=["Coefficients"])
-            #return r2_square, coefs
                 
         except Exception as e:
             raise CustomException(e,sys)

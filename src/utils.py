@@ -6,6 +6,7 @@ import pandas as pd
 import dill
 import pickle
 
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 from pathlib import Path
@@ -34,31 +35,60 @@ def save_object(file_path, obj):
 ### This function needs to be updated on a case by case basis     
 def evaluate_models(X_train, y_train, X_test, y_test, models):
     try:
-        accuracy, precision, recall = {}, {}, {}
+        all_models_results = {}
+        best_model = None
+        best_accuracy = 0
 
-        for key in models.keys():
-            if models[key] == 0:
+        for model_name, model in models.items():
+            if model == 0:
                 #baseline
                 predictions = np.ones(len(y_test))
-                accuracy[key] = accuracy_score(predictions, y_test)
-                precision[key] = precision_score(predictions, y_test)
-                recall[key] = recall_score(predictions, y_test)
-            elif models[key] != 0:
-                # Fit the classifier
-                models[key].fit(X_train, y_train)
-                # Make predictions
-                predictions = models[key].predict(X_test)
-                # Calculate metrics
-                accuracy[key] = accuracy_score(predictions, y_test)
-                precision[key] = precision_score(predictions, y_test)
-                recall[key] = recall_score(predictions, y_test)
-        
-        df_model = pd.DataFrame(index=models.keys(), columns=['Accuracy', 'Precision', 'Recall'])
-        df_model['Accuracy'] = accuracy.values()
-        df_model['Precision'] = precision.values()
-        df_model['Recall'] = recall.values()
+                accuracy = accuracy_score(predictions, y_test)
+                precision = precision_score(predictions, y_test)
+                recall = recall_score(predictions, y_test)
+            else:
+                cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=67)
+                accuracy_scores = cross_val_score(model, X_train, y_train, cv = cv, scoring = 'accuracy')
+                precision_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring='precision')
+                recall_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring='recall')
 
-        return df_model
+                accuracy = accuracy_scores.mean()
+                precision = precision_scores.mean()
+                recall = recall_scores.mean()
+
+                # Fit the model to the entire training set
+                model.fit(X_train, y_train)
+                predictions = model.predict(X_test)
+                test_accuracy = accuracy_score(predictions, y_test)
+                test_precision = precision_score(predictions, y_test)
+                test_recall = recall_score(predictions, y_test)
+
+            all_models_results[model_name] = {
+                "model": model,
+                "accuracy": accuracy,
+                "precision": precision,
+                "recall": recall,
+                "test_accuracy": test_accuracy,
+                "test_precision": test_precision,
+                "test_recall": test_recall
+            }
+
+            if accuracy > best_accuracy:
+                best_accuracy = accuracy
+                logging.info(f"{model_name} with an accuracy {best_accuracy}")
+                l
+                best_model = {
+                    "name": model_name,
+                    "model": model,
+                    "accuracy": accuracy,
+                    "precision": precision,
+                    "recall": recall,
+                    "test_accuracy": test_accuracy,
+                    "test_precision": test_precision,
+                    "test_recall": test_recall
+                }
+
+        return all_models_results, best_model
 
     except Exception as e:
         raise CustomException(e, sys)
