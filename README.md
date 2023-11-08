@@ -14,6 +14,8 @@ This approach is applicable to a wide range of classification problems, offering
 
 ## Approach
 
+![End to End Machine Learning Pipeline](src/static/end_to_end_machine_learning_pipeline.png)
+
 -  Data Ingestion
 -  Data Transformation
 -  Model Selection
