@@ -41,11 +41,11 @@ features = {
     'math_ss': 75.0, 
     'read_ss': 75.0, 
     'pct_days_absent': 7.5, 
-    'gpa': 3.33, 
+    'gpa': 1.33, 
     'scale_score_11_eng': 18.0,
-    'scale_score_11_math': 22.0, 
-    'scale_score_11_read': 22.0, 
-    'scale_score_11_comp': 24.0
+    'scale_score_11_math': 18.0, 
+    'scale_score_11_read': 18.0, 
+    'scale_score_11_comp': 18.0
     }
 data = pd.DataFrame(features,index=[0])
 

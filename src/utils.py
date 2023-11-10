@@ -50,8 +50,6 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                 end_time = time.time()
                 training_time = end_time - start_time
                 accuracy = accuracy_score(train_predictions, y_train)
-                precision = precision_score(train_predictions, y_train)
-                recall = recall_score(train_predictions, y_train)
                 test_predictions = np.ones(len(y_test))
                 test_accuracy = accuracy_score(test_predictions, y_test)
                 test_precision = precision_score(test_predictions, y_test)
@@ -59,15 +57,11 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
             else:
                 start_time = time.time()
                 cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=67)
+                accuracy_scores = cross_val_score(model, X_train, y_train, cv = cv, scoring = 'accuracy')
                 end_time = time.time()
                 training_time = end_time - start_time
-                accuracy_scores = cross_val_score(model, X_train, y_train, cv = cv, scoring = 'accuracy')
-                precision_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring='precision')
-                recall_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring='recall')
-
                 accuracy = accuracy_scores.mean()
-                precision = precision_scores.mean()
-                recall = recall_scores.mean()
+
 
                 # Fit the model to the entire training set
                 model.fit(X_train, y_train)
@@ -75,14 +69,12 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                 test_accuracy = accuracy_score(predictions, y_test)
                 test_precision = precision_score(predictions, y_test)
                 test_recall = recall_score(predictions, y_test)
-                print(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
-                logging.info(f"{model_name} with an accuracy {test_accuracy} in {training_time} seconds")
+                print(f"{model_name} with an accuracy {test_accuracy:.3%} in {training_time:.3f} seconds")
+                logging.info(f"{model_name} with an accuracy {test_accuracy:.3%} in {training_time:.3f} seconds")
 
             all_models_results[model_name] = {
                 "model_name": model_name,
                 "accuracy": accuracy,
-                "precision": precision,
-                "recall": recall,
                 "test_accuracy": test_accuracy,
                 "test_precision": test_precision,
                 "test_recall": test_recall,
@@ -92,17 +84,16 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
             if test_accuracy > best_accuracy:
                 best_accuracy = test_accuracy
                 best_model = model
+                best_model_name = model_name
                 best_model_stats = {
                     "name": model_name,
                     "accuracy": accuracy,
-                    "precision": precision,
-                    "recall": recall,
                     "test_accuracy": test_accuracy,
                     "test_precision": test_precision,
                     "test_recall": test_recall,
                     "training_time": training_time
                 }
-            
+        logging.info(f"{best_model_name} with an accuracy {best_accuracy:.3%} in {training_time:.3f} seconds") 
         return all_models_results, best_model_stats, best_model
 
     except Exception as e:

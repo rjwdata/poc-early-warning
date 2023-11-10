@@ -145,12 +145,17 @@ prediction = predict_pipeline.predict(user_input_df)
 st.subheader('User Input parameters')
 st.write(user_input_df)
 
+if prediction[0] == 1:
+    grad = 'Diploma'
+else:
+    grad = 'No Diploma'
+
 hs_grad = '{:.2f}%'.format(prediction[1][0][1]*100)
 no_hs_grad = '{:.2f}%'.format(prediction[1][0][0]*100)
 
 col1, col2, col3 = st.columns(3)
-col1.metric("HS Diploma", hs_grad)
-col2.metric('Probability HS Diploma', hs_grad)
+col1.metric("Diploma Prediction", grad)
+col2.metric('Probability of HS Diploma', hs_grad)
 col3.metric('Prbability of no HS Diploma', no_hs_grad)
 
 #prediction_proba = model.predict_prob(user_input_df)

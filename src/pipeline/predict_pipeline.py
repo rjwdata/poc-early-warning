@@ -20,7 +20,7 @@ class PredictPipeline:
             print("After Loading")
             data_scaled=preprocessor.transform(data)
             preds=model.predict(data_scaled)
-            probs =model.predict_proba(data_scaled)
+            probs =model.predict_proba(data_scaled)[:,1]
 
             return preds, probs
         
