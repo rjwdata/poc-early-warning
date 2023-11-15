@@ -150,8 +150,8 @@ if prediction[0] == 1:
 else:
     grad = 'No Diploma'
 
-hs_grad = '{:.2f}%'.format(prediction[1][0][1]*100)
-no_hs_grad = '{:.2f}%'.format(prediction[1][0][0]*100)
+hs_grad = prediction[1]*100
+no_hs_grad = 1 - prediction[1]*100
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Diploma Prediction", grad)
