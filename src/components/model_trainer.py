@@ -15,15 +15,36 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 import xgboost as xgb
+import yaml
 
 from src.exception import CustomException
 from src.logger import logging
 
 from src.utils import save_object, evaluate_models
 
+## get paramaters from config file
+config_path = os.path.join("config", "params.yaml")
+
+def read_params(config_path):
+    with open(config_path) as yaml_file:
+        config = yaml.safe_load(yaml_file)
+    return config
+
+def get_config(config_path):
+    try:
+        config = read_params(config_path)
+        if config is None:
+            raise ValueError("Config file is empty or invalid.")
+        return config
+    except Exception as e:
+        raise CustomException(f"Error reading configuration: {str(e)}", sys)
+
+config = get_config(config_path)
+
 @dataclass
 class ModelTrainerConfig:
     trained_model_file_path=os.path.join("artifacts","model.pkl")
+    lr = str=config['mdoels']['logistic_regression']
 
 class ModelTrainer:
     def __init__(self):
@@ -41,7 +62,7 @@ class ModelTrainer:
             )
             models = {
                 'Baseline': 0,
-                'Logistic Regression': LogisticRegression(max_iter = 1000),
+                'Logistic Regression': lr,
                 'Support Vector Machines': LinearSVC(dual='auto'),
                 'Decision Trees': DecisionTreeClassifier(),
                 'Random Forest': RandomForestClassifier(),

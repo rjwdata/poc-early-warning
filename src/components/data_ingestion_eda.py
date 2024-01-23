@@ -28,7 +28,7 @@ from evidently.tests.base_test import generate_column_tests
 from evidently.test_preset import DataStabilityTestPreset,NoTargetPerformanceTestPreset, RegressionTestPreset, DataQualityTestPreset
 from evidently.tests import *
 
-config_path = config_path = os.path.join("config", "params.yaml")
+config_path = os.path.join("config", "params.yaml")
 
 features = {
     'male': 'male',
