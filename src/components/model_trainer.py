@@ -40,11 +40,11 @@ def get_config(config_path):
         raise CustomException(f"Error reading configuration: {str(e)}", sys)
 
 config = get_config(config_path)
+lr = config['models']['logistic_regression']
 
 @dataclass
 class ModelTrainerConfig:
     trained_model_file_path=os.path.join("artifacts","model.pkl")
-    lr = str=config['mdoels']['logistic_regression']
 
 class ModelTrainer:
     def __init__(self):
@@ -62,7 +62,7 @@ class ModelTrainer:
             )
             models = {
                 'Baseline': 0,
-                'Logistic Regression': lr,
+                'Logistic Regression': eval(lr),
                 'Support Vector Machines': LinearSVC(dual='auto'),
                 'Decision Trees': DecisionTreeClassifier(),
                 'Random Forest': RandomForestClassifier(),

@@ -1,0 +1,13 @@
+DecisionTreeClassifier: !!binary |
+  gASVNAAAAAAAAACMFXNrbGVhcm4udHJlZS5fY2xhc3Nlc5SMFkRlY2lzaW9uVHJlZUNsYXNzaWZp
+  ZXKUk5Qu
+GaussianNB: !!binary |
+  gASVJgAAAAAAAACME3NrbGVhcm4ubmFpdmVfYmF5ZXOUjApHYXVzc2lhbk5ClJOULg==
+LinearSVC: !!binary |
+  gASVJgAAAAAAAACMFHNrbGVhcm4uc3ZtLl9jbGFzc2VzlIwJTGluZWFyU1ZDlJOULg==
+LogisticRegression: !!binary |
+  gASVOQAAAAAAAACMHnNrbGVhcm4ubGluZWFyX21vZGVsLl9sb2dpc3RpY5SMEkxvZ2lzdGljUmVn
+  cmVzc2lvbpSTlC4=
+RandomForestClassifier: !!binary |
+  gASVNwAAAAAAAACMGHNrbGVhcm4uZW5zZW1ibGUuX2ZvcmVzdJSMFlJhbmRvbUZvcmVzdENsYXNz
+  aWZpZXKUk5Qu
