@@ -19,10 +19,20 @@ def get_requirements(file_path:str) -> List[str]:
     return requirements
 
 setup(
-    name = 'mlproject',
+    name = 'poc-early-warning',
     version = '0.0.1',
     author = 'hawkeye',
-    author_email = 'wilson.ryan.jay@gmail.com',
+    author_email = 'project@example.com',
+    description = 'POC Early Warning System - High School Diploma Prediction',
     packages = find_packages(),
-    install_requires = get_requirements('requirements.txt')
+    install_requires = get_requirements('requirements.txt'),
+    python_requires = '>=3.8',
+    classifiers = [
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+    ],
 )

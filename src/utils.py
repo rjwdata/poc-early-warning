@@ -69,7 +69,6 @@ def evaluate_models(X_train, y_train, models, X_test, y_test):
                 test_accuracy = accuracy_score(predictions, y_test)
                 test_precision = precision_score(predictions, y_test)
                 test_recall = recall_score(predictions, y_test)
-                print(f"{model_name} with an accuracy {test_accuracy:.3%} in {training_time:.3f} seconds")
                 logging.info(f"{model_name} with an accuracy {test_accuracy:.3%} in {training_time:.3f} seconds")
 
             all_models_results[model_name] = {

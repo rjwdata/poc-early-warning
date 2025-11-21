@@ -38,15 +38,15 @@ artifacts_dir:
   general: general
   mlflow: mlflow_artifacts
 
-# base model selection  
+# base model selection (set to true to enable, false to disable)
 models:
-  logistic_regression: LogisticRegression()
-  svc: LinearSVC()
-  decision_tree: DecisionTreeClassifier()
-  random_forest: RandomForestClassifier()
-  naive_bayes: GaussianNB()
-  knn: KNeighborsClassifer()
-  xgboost: xgb.XGBClassifier(objective="binary:logistic", random_state=42)
+  logistic_regression: true
+  svc: true
+  decision_tree: true
+  random_forest: true
+  naive_bayes: true
+  knn: true
+  xgboost: true
 
 
 model_tuning:

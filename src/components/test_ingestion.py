@@ -1,18 +1,14 @@
 import os
 import argparse
-import yaml
 from src.logger import logging
 from src.exception import CustomException
+from src.config_loader import get_config
 import pandas as pd
 
-def read_params(config_path):
-    with open(config_path) as yaml_file:
-        config = yaml.safe_load(yaml_file)
-    return config
-
 def main(config_path, datasource):
-    config = read_params(config_path)
-    print(config)
+    config = get_config(config_path)
+    logging.info(f"Configuration loaded: {config}")
+    return config
 
 if __name__ =="__main__":
     args = argparse.ArgumentParser()

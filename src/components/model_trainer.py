@@ -15,32 +15,15 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 import xgboost as xgb
-import yaml
 
 from src.exception import CustomException
 from src.logger import logging
-
 from src.utils import save_object, evaluate_models
+from src.config_loader import get_config
 
-## get paramaters from config file
+## get parameters from config file
 config_path = os.path.join("config", "params.yaml")
-
-def read_params(config_path):
-    with open(config_path) as yaml_file:
-        config = yaml.safe_load(yaml_file)
-    return config
-
-def get_config(config_path):
-    try:
-        config = read_params(config_path)
-        if config is None:
-            raise ValueError("Config file is empty or invalid.")
-        return config
-    except Exception as e:
-        raise CustomException(f"Error reading configuration: {str(e)}", sys)
-
 config = get_config(config_path)
-lr = config['models']['logistic_regression']
 
 @dataclass
 class ModelTrainerConfig:
@@ -60,16 +43,45 @@ class ModelTrainer:
                 test_array[:,:-1],
                 test_array[:,-1]
             )
-            models = {
-                'Baseline': 0,
-                'Logistic Regression': eval(lr),
-                'Support Vector Machines': LinearSVC(dual='auto'),
-                'Decision Trees': DecisionTreeClassifier(),
-                'Random Forest': RandomForestClassifier(),
-                'Naive Bayes': GaussianNB(),
-                'K-Nearest Neighbor': KNeighborsClassifier(),
-                'xgboost': xgb.XGBClassifier(objective="binary:logistic", random_state=42)
+            def create_model_from_config(model_name, model_config):
+                """Safely creates a model instance from configuration without using eval()."""
+                model_registry = {
+                    'logistic_regression': lambda: LogisticRegression(),
+                    'svc': lambda: LinearSVC(dual='auto'),
+                    'decision_tree': lambda: DecisionTreeClassifier(),
+                    'random_forest': lambda: RandomForestClassifier(),
+                    'naive_bayes': lambda: GaussianNB(),
+                    'knn': lambda: KNeighborsClassifier(),
+                    'xgboost': lambda: xgb.XGBClassifier(objective="binary:logistic", random_state=42)
+                }
+
+                if model_name not in model_registry:
+                    raise ValueError(f"Unknown model: {model_name}")
+
+                return model_registry[model_name]()
+
+            # Build models dictionary safely from config
+            models = {'Baseline': 0}
+
+            # Get models from config and instantiate them safely
+            config_models = config.get('models', {})
+            model_mapping = {
+                'logistic_regression': 'Logistic Regression',
+                'svc': 'Support Vector Machines',
+                'decision_tree': 'Decision Trees',
+                'random_forest': 'Random Forest',
+                'naive_bayes': 'Naive Bayes',
+                'knn': 'K-Nearest Neighbor',
+                'xgboost': 'xgboost'
             }
+
+            for config_key, display_name in model_mapping.items():
+                if config_key in config_models and config_models[config_key]:
+                    try:
+                        models[display_name] = create_model_from_config(config_key, config_models[config_key])
+                    except Exception as e:
+                        logging.warning(f"Failed to create model {display_name}: {str(e)}")
+                        continue
 
 
             all_models_results, best_model_stats, best_model = evaluate_models(X_train, y_train, models, X_test, y_test)
@@ -78,13 +90,15 @@ class ModelTrainer:
             pretty_all_models = json.dumps(all_models_results, indent=4)
             pretty_best_model = json.dumps(best_model_stats, indent=4)
 
-            print(pretty_all_models)
-            print(pretty_best_model)
+            logging.info(f"All models results:\n{pretty_all_models}")
+            logging.info(f"Best model stats:\n{pretty_best_model}")
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
             )
-                
+
+            logging.info("Model training completed successfully")
+
         except Exception as e:
             raise CustomException(e,sys)

@@ -163,3 +163,14 @@ data/processed/
 data/raw/
 config/params.yaml
 notebooks/param_test.ipynb
+
+# Large HTML report files (generated on-demand)
+artifacts/*.html
+reports/*.html
+
+# UV package manager
+.uv/
+uv.lock
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github\instructions\snyk_rules.instructions.md

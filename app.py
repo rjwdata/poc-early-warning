@@ -36,11 +36,6 @@ if __name__ == "__main__":
         selected_project: Path = PROJECTS_DIR / select_project(projects)
         reports_dir: Path = REPORTS_DIR_NAME
 
-        # Sidebar: Select period
-        #periods: List[Text] = list_periods(reports_dir)
-        #selected_period: Text = select_period(periods)
-        #period_dir: Path = reports_dir / selected_period
-
         # Sidebar: Select report (UI)
 
         report_mapping: Dict[Text, Path] = get_reports_mapping(reports_dir)

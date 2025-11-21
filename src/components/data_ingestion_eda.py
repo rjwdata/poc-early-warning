@@ -1,11 +1,8 @@
 import os
 import sys
 from src.exception import CustomException
-from  src.logger import logging
+from src.logger import logging
 import pandas as pd
-
-import argparse
-import yaml
 
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
@@ -15,53 +12,38 @@ from src.components.data_transformation import DataTransformationConfig
 from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
 from src.pipeline.predict_pipeline import PredictPipeline
+from src.config_loader import get_config
 
 from evidently import ColumnMapping
 
 from evidently.report import Report
 from evidently.metrics.base_metric import generate_column_metrics
 from evidently.metric_preset import DataDriftPreset, TargetDriftPreset, DataQualityPreset, RegressionPreset
-from evidently.metrics import *
 
 from evidently.test_suite import TestSuite
 from evidently.tests.base_test import generate_column_tests
-from evidently.test_preset import DataStabilityTestPreset,NoTargetPerformanceTestPreset, RegressionTestPreset, DataQualityTestPreset
-from evidently.tests import *
+from evidently.test_preset import DataStabilityTestPreset, NoTargetPerformanceTestPreset, RegressionTestPreset, DataQualityTestPreset
 
 config_path = os.path.join("config", "params.yaml")
 
 features = {
     'male': 'male',
-    'race_ethnicity': 'white', 
-    'frpl': 'yes_frlp', 
-    'iep': 'no_iep', 
-    'ell': 'no_ell', 
+    'race_ethnicity': 'white',
+    'frpl': 'yes_frlp',
+    'iep': 'no_iep',
+    'ell': 'no_ell',
     'ever_alternative':'yes_alt',
     'ap_ever_take_class': 'yes_ap',
-    'math_ss': 75.0, 
-    'read_ss': 75.0, 
-    'pct_days_absent': 7.5, 
-    'gpa': 1.33, 
+    'math_ss': 75.0,
+    'read_ss': 75.0,
+    'pct_days_absent': 7.5,
+    'gpa': 1.33,
     'scale_score_11_eng': 18.0,
-    'scale_score_11_math': 18.0, 
-    'scale_score_11_read': 18.0, 
+    'scale_score_11_math': 18.0,
+    'scale_score_11_read': 18.0,
     'scale_score_11_comp': 18.0
     }
 data = pd.DataFrame(features,index=[0])
-
-def read_params(config_path):
-    with open(config_path) as yaml_file:
-        config = yaml.safe_load(yaml_file)
-    return config
-
-def get_config(config_path):
-    try:
-        config = read_params(config_path)
-        if config is None:
-            raise ValueError("Config file is empty or invalid.")
-        return config
-    except Exception as e:
-        raise CustomException(f"Error reading configuration: {str(e)}", sys)
 
 config = get_config(config_path)
 
@@ -133,7 +115,9 @@ if __name__== "__main__":
     train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_set,test_set)
     
     modeltrainer=ModelTrainer()
-    print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
+    model_result = modeltrainer.initiate_model_trainer(train_arr,test_arr)
+    logging.info(f"Model trainer result: {model_result}")
 
     predictpipeline = PredictPipeline()
-    print(predictpipeline.predict(data))
+    predictions = predictpipeline.predict(data)
+    logging.info(f"Prediction result: {predictions}")
