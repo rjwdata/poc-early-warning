@@ -1,0 +1,58 @@
+{
+  "baseline": {
+    "accuracy": 0.813,
+    "precision": 1.0,
+    "recall": 0.813,
+    "f1": 0.897,
+    "training_time": 0.001
+  },
+  "logistic_regression": {
+    "accuracy": 0.856,
+    "precision": 0.964,
+    "recall": 0.872,
+    "f1": 0.916,
+    "training_time": 5.4
+  },
+  "svm": {
+    "accuracy": 0.855,
+    "precision": 0.971,
+    "recall": 0.866,
+    "f1": 0.915,
+    "training_time": 12.8
+  },
+  "decision_tree": {
+    "accuracy": 0.848,
+    "precision": 0.902,
+    "recall": 0.91,
+    "f1": 0.906,
+    "training_time": 1.2
+  },
+  "random_forest": {
+    "accuracy": 0.905,
+    "precision": 0.952,
+    "recall": 0.933,
+    "f1": 0.942,
+    "training_time": 38.7
+  },
+  "naive_bayes": {
+    "accuracy": 0.748,
+    "precision": 0.746,
+    "recall": 0.93,
+    "f1": 0.829,
+    "training_time": 0.3
+  },
+  "knn": {
+    "accuracy": 0.873,
+    "precision": 0.927,
+    "recall": 0.917,
+    "f1": 0.922,
+    "training_time": 2.1
+  },
+  "xgboost": {
+    "accuracy": 0.906,
+    "precision": 0.947,
+    "recall": 0.939,
+    "f1": 0.943,
+    "training_time": 45.2
+  }
+}

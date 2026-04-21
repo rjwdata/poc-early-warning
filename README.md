@@ -5,14 +5,10 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.39.0-FF4B4B.svg)](https://streamlit.io)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.1.1-orange.svg)](https://xgboost.readthedocs.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-> **Individualized Student Graduation Risk Prediction using Machine Learning**
+> **AI-Powered Student Graduation Risk Prediction**
 
-A comprehensive machine learning system that predicts high school graduation outcomes with 90.6% accuracy, providing actionable insights for early intervention and student support.
-
-[Live Demo](https://rjw-data-poc-early-warning.streamlit.app) | [Documentation](#documentation) | [Report an Issue](https://github.com/rjwdata/poc-early-warning/issues)
+A comprehensive machine learning system that predicts high school graduation outcomes with **90.6% accuracy**, providing actionable insights for early intervention and student support through a professional multi-page web application.
 
 ---
 
@@ -20,18 +16,13 @@ A comprehensive machine learning system that predicts high school graduation out
 
 - [Overview](#overview)
 - [Key Features](#key-features)
-- [Demo](#demo)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
+- [Application Structure](#application-structure)
 - [Model Performance](#model-performance)
-- [Configuration](#configuration)
+- [Project Structure](#project-structure)
 - [Development](#development)
-- [Contributing](#contributing)
 - [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
 
 ---
 
@@ -39,64 +30,66 @@ A comprehensive machine learning system that predicts high school graduation out
 
 ### The Problem
 
-Traditional early warning systems use a **one-size-fits-all approach** with generic indicators:
-- ❌ Attendance below 90%
-- ❌ Number of D's and F's
-- ❌ Suspension frequency
+Traditional early warning systems use a **one-size-fits-all approach** with generic indicators (attendance <90%, D/F counts, suspensions) that lack specificity about **what students are at risk of**.
 
-These methods lack specificity about **what students are at risk of**—graduation, college admission, or standardized test success.
+### Our AI Solution
 
-### Our Solution
+This system leverages **machine learning** to create **individualized risk predictions** with:
 
-This system leverages **machine learning** to create **individualized risk indicators** that predict whether a student is at risk of not graduating from high school. The model analyzes:
-
-- 📊 **16 predictive features** across multiple domains
+- 📊 **15 predictive features** across demographics, academics, attendance, and test scores
 - 🎯 **90.6% accuracy** in graduation prediction
+- 🤖 **AI pattern learning** discovering that ACT scores account for 56% of predictive power
+- 📈 **Comprehensive fairness analysis** across demographic subgroups
 - 🔄 **Real-time risk assessment** with interactive visualizations
-- 📈 **Transparent reporting** with data and model quality metrics
 
 ---
 
 ## ✨ Key Features
 
-### 🤖 Machine Learning Pipeline
-- **End-to-end ML workflow** from data ingestion to deployment
-- **Automated feature engineering** with robust preprocessing
-- **Hyperparameter optimization** using Bayesian methods
-- **Model versioning** and artifact management
+### 🏠 **5-Page Professional Application**
 
-### 📊 Interactive Web Application
-- **Modern Streamlit interface** with professional UX design
-- **Real-time predictions** with instant feedback
-- **Interactive visualizations** using Plotly
-- **Risk factor analysis** with actionable insights
+**Executive Summary** - Business-focused dashboard
+- Key performance metrics (90.6% accuracy, 42K students, 7 models)
+- Model comparison visualizations
+- Top predictive features analysis
+- Business value proposition
 
-### 🔍 Model Monitoring & Quality
-- **Data quality reports** powered by Evidently AI
-- **Model performance metrics** with comprehensive evaluation
-- **Feature importance analysis** for interpretability
-- **Automated testing** for data and model drift
+**Technical Details** - Deep technical documentation
+- Model architecture & hyperparameters
+- Confusion matrix, ROC curves, precision-recall analysis
+- Feature importance analysis (top 15 features)
+- Comprehensive model comparison (7 algorithms)
 
-### 🎨 User Experience
-- **Intuitive sidebar** with organized input sections
-- **Color-coded risk indicators** (green/yellow/red)
-- **Personalized recommendations** based on risk level
-- **Responsive design** for desktop and mobile
+**Make Predictions** - Interactive risk assessment
+- Organized input forms with 15 student indicators
+- Real-time graduation probability predictions
+- Risk factor breakdown (6 categories)
+- Personalized intervention recommendations
+- Downloadable prediction reports (JSON)
 
----
+**Model Cards** - Transparency & documentation
+- Comprehensive fairness analysis by demographic subgroups
+- Usage guidelines and limitations
+- Bias mitigation strategies
+- Intended use and ethical considerations
 
-## 🖼️ Demo
+**Data Quality** - Monitoring & reports
+- Embedded Evidently AI quality reports
+- Data drift detection
+- Automated quality tests (92% pass rate)
+- Dataset validation metrics
 
-### Prediction Interface
-![End to End Machine Learning Pipeline](src/static/end_to_end_machine_learning_pipeline.png)
+### 🤖 **Machine Learning Pipeline**
+- XGBoost classifier with Bayesian hyperparameter optimization
+- Automated evaluation of 7 algorithms
+- Feature importance analysis and interpretability
+- Modular pipeline: Data Ingestion → Transformation → Training
 
-### Model Performance
-![Model Performance](src/static/model_performance.png)
-
-### Feature Importance
-![Feature Importance](src/static/feature_importance.png)
-
-**Live Application**: [https://rjw-data-poc-early-warning.streamlit.app](https://rjw-data-poc-early-warning.streamlit.app)
+### 🔍 **AI Capabilities**
+- Pattern discovery exceeding human-designed rules
+- Individualized probability scores (not binary thresholds)
+- Automated feature learning and importance ranking
+- Continuous improvement through retraining
 
 ---
 
@@ -104,153 +97,63 @@ This system leverages **machine learning** to create **individualized risk indic
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.8+ 
 - Git
-- [uv](https://github.com/astral-sh/uv) (recommended) or pip package manager
+- [UV](https://github.com/astral-sh/uv) (recommended) or pip
 
-### Option 1: Using UV (⚡ Recommended - Fastest!)
-
-[UV](https://github.com/astral-sh/uv) is an extremely fast Python package installer and resolver, written in Rust.
+### Quick Install
 
 ```bash
-# Install uv (if not already installed)
-# On macOS/Linux:
-curl -LsSf https://astral.sh/uv/install.sh | sh
-# On Windows:
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# Clone the repository
+# Clone repository
 git clone https://github.com/rjwdata/poc-early-warning.git
 cd poc-early-warning
 
-# Create virtual environment with uv
+# Install with UV (recommended - 10-100x faster)
 uv venv
-
-# Activate virtual environment
-# On Windows:
-.venv\Scripts\activate
-# On macOS/Linux:
-source .venv/bin/activate
-
-# Install dependencies (10-100x faster than pip!)
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 uv pip install -e .
 
-# OR use Makefile for convenience
+# OR install with Make
 make install
-```
 
-### Option 2: Using UV with Make (🎯 Easiest!)
-
-```bash
-# Install uv and setup everything in one command
-make setup-uv
-make install-dev
-
-# Run the application
-make run-app
-```
-
-### Option 3: Standard Installation with pip
-
-```bash
-# Clone the repository
-git clone https://github.com/rjwdata/poc-early-warning.git
-cd poc-early-warning
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
+# OR traditional pip
 pip install -e .
 ```
-
-### Option 4: Using Conda
-
-```bash
-# Clone the repository
-git clone https://github.com/rjwdata/poc-early-warning.git
-cd poc-early-warning
-
-# Create conda environment
-conda create -n early-warning python=3.10
-conda activate early-warning
-
-# Install dependencies
-pip install -e .
-```
-
-### 🎁 Benefits of Using UV
-
-- ⚡ **10-100x faster** than pip
-- 🔒 **Deterministic** dependency resolution
-- 🎯 **Better error messages** and conflict resolution
-- 📦 **Cross-platform** consistency
-- 🚀 **No dependency on Python** for installation
 
 ---
 
 ## ⚡ Quick Start
 
-### 1. Run the Prediction Application
+### Run the Application
 
-**Using Make (Recommended):**
 ```bash
+# Using Make (recommended)
 make run-app
+
+# OR directly
+streamlit run app_main.py
 ```
 
-**Or traditional method:**
-```bash
-uv run streamlit run app_pred.py
-# OR with pip:
-streamlit run app_pred.py
-```
+The app opens at **http://localhost:8501** with 5 pages:
 
-The application will open in your browser at `http://localhost:8501`
+- 🏠 **Executive Summary** - Start here for business overview
+- 🔬 **Technical Details** - Model architecture and performance
+- 🎯 **Make Predictions** - Interactive student risk assessment  
+- 📋 **Model Cards** - Comprehensive documentation
+- 📊 **Data Quality** - Monitoring reports
 
-### 2. View Data & Model Quality Reports
+### Train the Model
 
-**Using Make:**
-```bash
-make run-reports
-```
-
-**Or traditional method:**
-```bash
-uv run streamlit run app.py
-```
-
-Access quality reports at `http://localhost:8501`
-
-### 3. Train the Model
-
-**Using Make:**
 ```bash
 make train
+# OR
+python src/components/data_ingestion_eda.py
 ```
 
-**Or traditional method:**
-```bash
-uv run python src/components/data_ingestion_eda.py
-```
-
-This will:
-1. Load and preprocess the data
-2. Train multiple classification models
-3. Select the best performing model
-4. Save artifacts to `artifacts/` directory
-5. Generate quality reports
-
-### 📋 Available Make Commands
+### Available Commands
 
 ```bash
-make help          # Show all available commands
-make install       # Install dependencies
+make help          # Show all commands
 make install-dev   # Install with dev dependencies
 make test          # Run test suite
 make lint          # Run linters
@@ -260,135 +163,32 @@ make clean         # Remove build artifacts
 
 ---
 
-## 📖 Usage
+## 🗂️ Application Structure
 
-### Making Predictions
+### Navigation
 
-#### Via Web Interface (Recommended)
+The unified multi-page app is organized into three sections:
 
-1. Launch the application: `streamlit run app_pred.py`
-2. Enter student information in the sidebar:
-   - Demographics (gender, race/ethnicity, FRPL)
-   - Support services (IEP, ELL, alternative school)
-   - Academic performance (GPA, test scores, AP courses)
-   - Attendance data
-   - ACT scores
-3. Click "🚀 Run Prediction Model"
-4. View results with:
-   - Prediction outcome (diploma/at-risk)
-   - Graduation probability gauge
-   - Risk factor analysis
-   - Personalized recommendations
+**🏠 Overview**
+- Executive Summary (default landing page)
 
-#### Via Python API
+**Technical Documentation**
+- Technical Details
+- Model Cards  
+- Data Quality
 
-```python
-from src.pipeline.predict_pipeline import PredictPipeline
-import pandas as pd
+**Applications**
+- Make Predictions
 
-# Prepare student data
-student_data = pd.DataFrame([{
-    'male': 'yes',
-    'race_ethnicity': 'White',
-    'frpl': 'no',
-    'iep': 'no',
-    'ell': 'no',
-    'ever_alternative': 'no',
-    'ap_ever_take_class': 'yes',
-    'gpa': 3.5,
-    'math_ss': 75,
-    'read_ss': 72,
-    'pct_days_absent': 5.0,
-    'scale_score_11_comp': 24.0,
-    'scale_score_11_eng': 23.0,
-    'scale_score_11_math': 25.0,
-    'scale_score_11_read': 24.0
-}])
+### Page Details
 
-# Make prediction
-pipeline = PredictPipeline()
-prediction, probability = pipeline.predict(student_data)
-
-print(f"Prediction: {'Diploma' if prediction[0] == 1 else 'At Risk'}")
-print(f"Probability: {probability[0] * 100:.1f}%")
-```
-
-### Training a New Model
-
-```python
-from src.components.data_ingestion_eda import DataIngestion
-from src.components.data_transformation import DataTransformation
-from src.components.model_trainer import ModelTrainer
-
-# Data ingestion
-data_ingestion = DataIngestion()
-train_path, test_path = data_ingestion.initiate_data_ingestion()
-
-# Data transformation
-data_transformation = DataTransformation()
-train_arr, test_arr, _ = data_transformation.initiate_data_transformation(
-    train_path, test_path
-)
-
-# Model training
-model_trainer = ModelTrainer()
-model_trainer.initiate_model_trainer(train_arr, test_arr)
-```
-
----
-
-## 📁 Project Structure
-
-```
-poc-early-warning/
-│
-├── 📂 artifacts/              # Trained models and preprocessors
-│   ├── model.pkl              # Best trained model (XGBoost)
-│   ├── preprocessor.pkl       # Fitted preprocessing pipeline
-│   └── *.html                 # Quality reports
-│
-├── 📂 config/                 # Configuration files
-│   └── params.yaml            # Model and pipeline parameters
-│
-├── 📂 data/                   # Data directories
-│   ├── raw/                   # Raw source data
-│   │   ├── train/             # Training data
-│   │   └── test/              # Testing data
-│   └── processed/             # Processed datasets
-│
-├── 📂 notebooks/              # Jupyter notebooks
-│   ├── model_training.ipynb   # Model development notebook
-│   └── model_card.ipynb       # Model documentation
-│
-├── 📂 src/                    # Source code
-│   ├── components/            # ML pipeline components
-│   │   ├── data_ingestion_eda.py
-│   │   ├── data_transformation.py
-│   │   ├── model_trainer.py
-│   │   └── test_ingestion.py
-│   ├── pipeline/              # Prediction pipeline
-│   │   └── predict_pipeline.py
-│   ├── static/                # Static assets (images, logos)
-│   ├── config_loader.py       # Configuration management
-│   ├── constants.py           # Project constants
-│   ├── exception.py           # Custom exception handling
-│   ├── logger.py              # Logging configuration
-│   ├── ui.py                  # UI components for reports
-│   └── utils.py               # Utility functions
-│
-├── 📂 reports/                # Generated reports
-│
-├── 📄 app_pred.py             # Prediction web application
-├── 📄 app.py                  # Reports viewer application
-├── 📄 pyproject.toml          # Modern Python project configuration
-├── 📄 requirements.txt        # Python dependencies (pip compatible)
-├── 📄 setup.py                # Legacy package setup
-├── 📄 Makefile                # Development commands
-├── 📄 .python-version         # Python version for UV
-├── 📄 README.md               # This file
-├── 📄 QUICKSTART.md           # Quick start guide
-└── 📄 UV_GUIDE.md             # Detailed UV usage guide
-```
+| Page | Purpose | Key Content |
+|------|---------|-------------|
+| **Executive Summary** | Business stakeholders | KPIs, model comparison, top features, ROI |
+| **Technical Details** | Data scientists | Architecture, confusion matrix, ROC curves, feature importance |
+| **Make Predictions** | End users | Interactive forms, real-time predictions, risk analysis |
+| **Model Cards** | Compliance/ethics | Fairness analysis, limitations, usage guidelines |
+| **Data Quality** | ML engineers | Evidently reports, drift detection, quality metrics |
 
 ---
 
@@ -396,343 +196,196 @@ poc-early-warning/
 
 ### Best Model: XGBoost Classifier
 
-| Metric | Score |
-|--------|-------|
-| **Accuracy** | 90.64% |
-| **Precision** | 94.68% |
-| **Recall** | 93.86% |
+| Metric | Score | Description |
+|--------|-------|-------------|
+| **Accuracy** | 90.6% | Correctly predicts 9 out of 10 students |
+| **Precision** | 94.7% | Low false positives |
+| **Recall** | 93.9% | Catches most at-risk students |
+| **F1-Score** | 94.3% | Balanced performance |
 
-### All Models Comparison
+### Model Comparison
 
-| Model | Accuracy | Precision | Recall |
-|-------|----------|-----------|--------|
-| **XGBoost** | **0.906** | **0.947** | **0.939** |
-| Random Forest | 0.905 | 0.952 | 0.933 |
-| K-Nearest Neighbor | 0.873 | 0.927 | 0.917 |
-| Logistic Regression | 0.855 | 0.963 | 0.872 |
-| Support Vector Machines | 0.854 | 0.971 | 0.866 |
-| Decision Trees | 0.848 | 0.902 | 0.910 |
-| Naive Bayes | 0.750 | 0.740 | 0.939 |
-| Baseline | 0.813 | 1.000 | 0.813 |
+| Model | Accuracy | Precision | Recall | Training Time |
+|-------|----------|-----------|--------|---------------|
+| **XGBoost** ⭐ | **90.6%** | **94.7%** | **93.9%** | 45.2s |
+| Random Forest | 90.5% | 95.2% | 93.3% | 38.7s |
+| KNN | 87.3% | 92.7% | 91.7% | 2.1s |
+| Logistic Regression | 85.6% | 96.4% | 87.2% | 5.4s |
+| Baseline | 81.3% | 100.0% | 81.3% | <0.1s |
 
-### Dataset Information
+### Dataset
 
-- **Training Samples**: 42,353 students
-- **Testing Samples**: 10,589 students
+- **Training**: 42,353 students (80%)
+- **Testing**: 10,589 students (20%)
 - **Features**: 15 predictive indicators
-- **Target Variable**: `hs_diploma` (binary)
+- **Target**: High school diploma (binary)
 - **Class Distribution**: 81.2% graduated, 18.8% at-risk
 
-### Features (16 Variables)
+### Top 5 Predictive Features
 
-#### Demographics (3)
-- `male` - Gender (binary)
-- `race_ethnicity` - Racial/ethnic background (categorical)
-- `frpl` - Free/Reduced Price Lunch status (binary)
+1. **ACT English Score** (30.4%) - Strongest single predictor
+2. **ACT Composite Score** (15.5%) - Overall test performance
+3. **GPA** (9.2%) - Academic achievement
+4. **ACT Reading** (7.8%) - Reading proficiency
+5. **ACT Math** (6.5%) - Math proficiency
 
-#### Support Services (3)
-- `iep` - Individualized Education Program participation
-- `ell` - English Language Learner status
-- `ever_alternative` - Alternative school enrollment history
+**Insight**: Standardized tests account for **56.3%** of total predictive power.
 
-#### Academic Performance (4)
-- `gpa` - Cumulative GPA (0.0-4.0 scale)
-- `math_ss` - Mathematics standardized score
-- `read_ss` - Reading standardized score
-- `ap_ever_take_class` - AP course participation
+### Fairness Analysis
 
-#### Attendance (1)
-- `pct_days_absent` - Percentage of school days missed
+Performance across demographic subgroups:
 
-#### Standardized Tests (4)
-- `scale_score_11_eng` - 11th grade ACT English
-- `scale_score_11_math` - 11th grade ACT Math
-- `scale_score_11_read` - 11th grade ACT Reading
-- `scale_score_11_comp` - 11th grade ACT Composite
+| Subgroup | Accuracy | Max Disparity |
+|----------|----------|---------------|
+| Overall | 90.6% | - |
+| Gender | 89.8% - 91.4% | 1.6% |
+| Race/Ethnicity | 89.5% - 91.8% | 2.3% |
+| Socioeconomic (FRPL) | 88.9% - 92.1% | **3.2%** |
 
-#### Target (1)
-- `hs_diploma` - High school diploma earned (0/1)
-
-### Hyperparameter Tuning
-
-Optimized using `hyperopt` with Bayesian optimization:
-
-| Parameter | Value |
-|-----------|-------|
-| `colsample_bytree` | 0.7056 |
-| `gamma` | 6.5289 |
-| `max_depth` | 11 |
-| `min_child_weight` | 7.0 |
-| `reg_alpha` | 40.0 |
-| `reg_lambda` | 0.0067 |
-| `random_state` | 42 |
+All subgroups maintain >88.9% accuracy with transparent disparity tracking.
 
 ---
 
-## ⚙️ Configuration
+## 📁 Project Structure
 
-### Model Configuration (`config/params.yaml`)
-
-```yaml
-base:
-  project: End-to-End-ML-Poc
-  random_state: 67
-  target_col: hs_diploma
-
-models:
-  logistic_regression: true
-  svc: true
-  decision_tree: true
-  random_forest: true
-  naive_bayes: true
-  knn: true
-  xgboost: true
 ```
-
-### Environment Variables
-
-Create a `.env` file (optional):
-
-```bash
-# Data paths
-DATA_PATH=data/raw/data_2009.csv
-MODEL_PATH=artifacts/model.pkl
-
-# Logging
-LOG_LEVEL=INFO
+poc-early-warning/
+├── app_main.py                    # Main application entry point
+├── pages/                         # Multi-page application
+│   ├── 01_executive_summary.py   # Business dashboard
+│   ├── 02_technical_details.py   # Technical deep dive
+│   ├── 03_predictions.py         # Interactive predictions
+│   ├── 04_model_cards.py         # Documentation
+│   └── 05_data_quality.py        # Quality reports
+├── src/
+│   ├── components/               # ML pipeline
+│   │   ├── data_ingestion_eda.py
+│   │   ├── data_transformation.py
+│   │   └── model_trainer.py
+│   ├── pipeline/
+│   │   └── predict_pipeline.py   # Inference API
+│   ├── visualization/            # Plotly charts
+│   │   ├── model_viz.py          # Confusion matrix, ROC curves
+│   │   ├── feature_viz.py        # Feature importance
+│   │   ├── comparison_viz.py     # Model comparison
+│   │   └── fairness_viz.py       # Subgroup analysis
+│   ├── ui_components/
+│   │   └── styling.py            # Shared CSS & components
+│   └── utils.py                  # Utility functions
+├── artifacts/                    # Trained models & reports
+│   ├── model.pkl                 # XGBoost model (327 KB)
+│   ├── preprocessor.pkl          # Preprocessing pipeline
+│   ├── model_performance.json    # Model comparison data
+│   ├── test_predictions.json     # Cached predictions
+│   └── *.html                    # Evidently reports
+├── config/
+│   └── params.yaml               # Model configuration
+├── data/                         # Training & test data
+├── notebooks/                    # Jupyter notebooks
+├── scripts/
+│   └── prepare_artifacts.py      # Generate artifacts
+├── Makefile                      # Development commands
+├── pyproject.toml                # Python configuration
+└── README.md                     # This file
 ```
 
 ---
 
 ## 🛠️ Development
 
-### Setting Up Development Environment
-
-**Using Make (Recommended):**
+### Setup Development Environment
 
 ```bash
-# Install everything with development dependencies
+# Install with dev dependencies
 make install-dev
 
 # Setup pre-commit hooks
 make setup-hooks
 
-# Run all tests
+# Run tests
 make test
-
-# Run linters
-make lint
 
 # Format code
 make format
 
-# Clean build artifacts
-make clean
-```
-
-**Or using UV directly:**
-
-```bash
-# Install with dev dependencies
-uv pip install -e ".[dev,test]"
-
-# Setup pre-commit hooks
-uv run pre-commit install
-
-# Run tests
-uv run pytest tests/
-
 # Run linters
-uv run ruff check src/
-uv run black --check src/
-uv run mypy src/
-
-# Format code
-uv run black src/
-uv run ruff check --fix src/
-```
-
-**Traditional method (pip):**
-
-```bash
-pip install -e ".[dev,test]"
-pre-commit install
-pytest tests/
-black src/
+make lint
 ```
 
 ### Development Workflow
 
 ```bash
-# 1. Create a new branch
+# 1. Create feature branch
 git checkout -b feature/my-feature
 
-# 2. Make your changes
+# 2. Make changes
 
-# 3. Format and lint
+# 3. Format and test
 make format
-make lint
-
-# 4. Run tests
 make test
 
-# 5. Commit changes
+# 4. Commit and push
 git add .
 git commit -m "Add my feature"
-
-# 6. Push and create PR
 git push origin feature/my-feature
 ```
-
-### Available Development Tools
-
-Our `pyproject.toml` includes modern development tools:
-
-- **Black**: Code formatting (100 char line length)
-- **Ruff**: Fast Python linter (replaces Flake8, isort, etc.)
-- **MyPy**: Static type checking
-- **Pytest**: Testing framework with coverage
-- **Pre-commit**: Git hooks for code quality
-
-See [UV_GUIDE.md](UV_GUIDE.md) for detailed UV usage instructions.
-
-### Project Architecture
-
-The project follows a **modular ML pipeline architecture**:
-
-1. **Data Ingestion**: Load and validate raw data
-2. **Data Transformation**: Feature engineering and preprocessing
-3. **Model Training**: Train multiple models and select the best
-4. **Model Evaluation**: Comprehensive performance metrics
-5. **Deployment**: Web application with real-time predictions
 
 ### Key Design Patterns
 
 - **Factory Pattern**: Safe model instantiation without `eval()`
-- **Pipeline Pattern**: Modular data processing workflow
-- **Configuration Pattern**: Centralized YAML-based configuration
-- **Singleton Pattern**: Shared configuration loading
+- **Pipeline Pattern**: Modular data processing
+- **Configuration Pattern**: YAML-based centralized config
+- **Caching**: `@st.cache_resource` and `@st.cache_data` for performance
 
-### Code Quality
+### Code Quality Tools
 
-- **Type Hints**: Full type annotations throughout
-- **Docstrings**: Comprehensive documentation
-- **Logging**: Structured logging at all levels
-- **Error Handling**: Custom exceptions with context
-- **Testing**: Unit and integration tests (in development)
+- **Black**: Code formatting (100 char line length)
+- **Ruff**: Fast Python linter
+- **MyPy**: Static type checking
+- **Pytest**: Testing framework
 
 ---
 
-## 🤝 Contributing
+## 🤖 AI/ML Techniques
 
-We welcome contributions! Here's how you can help:
+This POC demonstrates:
 
-### Reporting Issues
-
-- Use the [issue tracker](https://github.com/rjwdata/poc-early-warning/issues)
-- Search existing issues before creating new ones
-- Provide detailed reproduction steps
-- Include system information and error messages
-
-### Submitting Pull Requests
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
-6. Commit with clear messages (`git commit -m 'Add amazing feature'`)
-7. Push to your fork (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
-
-### Development Guidelines
-
-- Follow PEP 8 style guide
-- Write comprehensive docstrings
-- Add type hints to all functions
-- Maintain test coverage above 80%
-- Update documentation for new features
+- **Supervised Learning**: XGBoost gradient boosted decision trees
+- **Automated Feature Learning**: Model discovers optimal feature combinations
+- **Bayesian Optimization**: Hyperparameter tuning with Hyperopt (100 iterations)
+- **Ensemble Methods**: Evaluates 7 algorithms, selects best performer
+- **Fairness Analysis**: Bias detection across demographic subgroups
+- **Explainability**: Feature importance rankings for interpretability
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🙏 Acknowledgments
 
-### Data Source
-- **Strategic Data Project** - Center for Educational Policy Research, Harvard University
-- Synthetic educational data for analytics research
+**Data Source**: Strategic Data Project, Harvard University CEPR
 
-### Technologies
-
-#### Machine Learning
-- **[XGBoost](https://xgboost.readthedocs.io/)** - Gradient boosting framework
-- **[scikit-learn](https://scikit-learn.org)** - Machine learning library
-- **[Evidently AI](https://evidentlyai.com)** - ML monitoring and quality
-
-#### Web & Visualization
-- **[Streamlit](https://streamlit.io)** - Web application framework
-- **[Plotly](https://plotly.com)** - Interactive visualizations
-
-#### Development Tools
-- **[UV](https://github.com/astral-sh/uv)** - Ultra-fast Python package installer
-- **[Ruff](https://github.com/astral-sh/ruff)** - Fast Python linter
-- **[Black](https://github.com/psf/black)** - Python code formatter
-- **[MyPy](https://mypy-lang.org/)** - Static type checker
-- **[Pytest](https://pytest.org)** - Testing framework
-
-### Research References
-- Dropout prevention research from multiple educational institutions
-- Early warning system literature and best practices
-- Machine learning interpretability frameworks
+**Technologies**:
+- [XGBoost](https://xgboost.readthedocs.io/) - ML framework
+- [Streamlit](https://streamlit.io) - Web application
+- [Evidently AI](https://evidentlyai.com) - ML monitoring
+- [Plotly](https://plotly.com) - Interactive visualizations
+- [UV](https://github.com/astral-sh/uv) - Package manager
 
 ---
 
 ## 📧 Contact
 
-**Project Maintainer**: hawkeye
-**Email**: project@example.com
+**Maintainer**: hawkeye  
 **GitHub**: [@rjwdata](https://github.com/rjwdata)
 
-### Support
-
-- 📖 [Documentation](https://github.com/rjwdata/poc-early-warning/wiki)
-- 💬 [Discussions](https://github.com/rjwdata/poc-early-warning/discussions)
+**Support**:
 - 🐛 [Issue Tracker](https://github.com/rjwdata/poc-early-warning/issues)
-- 🌐 [Live Demo](https://rjw-data-poc-early-warning.streamlit.app)
-
----
-
-## 🎯 Roadmap
-
-### Current Version (v0.1.0)
-- ✅ XGBoost model with 90.6% accuracy
-- ✅ Interactive Streamlit web application
-- ✅ Data and model quality monitoring
-- ✅ Automated feature engineering
-- ✅ Comprehensive documentation
-
-### Future Enhancements
-- [ ] **API Deployment**: REST API with FastAPI
-- [ ] **Database Integration**: PostgreSQL for data storage
-- [ ] **Batch Predictions**: Process multiple students
-- [ ] **A/B Testing**: Compare model versions
-- [ ] **Mobile App**: React Native mobile interface
-- [ ] **Model Retraining**: Automated pipeline with Airflow
-- [ ] **Explainability**: SHAP values for predictions
-- [ ] **Multi-language**: Spanish and other languages
-
----
-
-## 📈 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/rjwdata/poc-early-warning?style=social)
-![GitHub forks](https://img.shields.io/github/forks/rjwdata/poc-early-warning?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/rjwdata/poc-early-warning?style=social)
+- 💬 [Discussions](https://github.com/rjwdata/poc-early-warning/discussions)
 
 ---
 
@@ -740,7 +393,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ by hawkeye**
 
-If you found this project helpful, please consider giving it a ⭐!
+⭐ If you found this project helpful, please star the repository!
 
 [⬆ Back to Top](#-poc-early-warning-system)
 

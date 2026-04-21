@@ -1,0 +1,12 @@
+{
+  "y_test": [1, 1, 0, 1, 1, 0, 1, 1, 1, 0],
+  "y_pred": [1, 1, 0, 1, 1, 1, 1, 1, 1, 0],
+  "y_proba": [0.92, 0.88, 0.15, 0.94, 0.87, 0.55, 0.96, 0.91, 0.89, 0.12],
+  "n_samples": 10589,
+  "features": {
+    "male": ["yes", "no", "yes", "no", "yes", "yes", "no", "yes", "no", "yes"],
+    "race_ethnicity": ["White", "White", "African-American", "Hispanic", "White", "Asian/Pacific Islander", "White", "Hispanic", "White", "African-American"],
+    "frpl": ["no", "yes", "yes", "no", "no", "yes", "no", "yes", "no", "yes"]
+  },
+  "note": "This is placeholder data. Run 'python scripts/prepare_artifacts.py' to generate actual predictions from test data."
+}
