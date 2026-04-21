@@ -88,15 +88,12 @@ format:
 	uv run ruff check --fix src/
 	@echo "Formatting complete!"
 
-# Run prediction app
+# Run unified application
 run-app:
-	@echo "Starting prediction application..."
-	uv run streamlit run app_pred.py
+	@echo "Starting POC Early Warning System..."
+	uv run streamlit run app_main.py
 
-# Run reports viewer
-run-reports:
-	@echo "Starting reports viewer..."
-	uv run streamlit run app.py
+# Legacy commands removed - use run-app for unified interface
 
 # Train model
 train:
