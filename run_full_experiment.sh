@@ -281,7 +281,14 @@ run_tasks_for_arm C
 
 # ========================= ARM D: Combined =========================
 echo "=== ARM D: Combined (codegraph on, rtk on) ==="
-claude mcp add codegraph -- codegraph serve --mcp
+# BUG 5 FIX: Arm D must turn codegraph on the SAME WAY Arm B does. Plain
+# `claude mcp add` only registers the MCP tool -- it does NOT wire in the
+# separate hook that `codegraph install --target=claude --yes` sets up
+# (see BUG 1 above), so Arm D was previously missing whatever benefit that
+# hook provides and would under-represent codegraph's contribution to the
+# combined condition. Re-run the exact same install/init sequence as Arm B.
+codegraph install --target=claude --yes
+codegraph init -i
 assert_codegraph_registered "yes"
 rtk gain || { echo "!!! ABORT: rtk gain failed -- rtk hook may not be active for Arm D." >&2; exit 1; }
 run_tasks_for_arm D
