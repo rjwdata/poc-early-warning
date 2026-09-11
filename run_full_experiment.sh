@@ -55,6 +55,15 @@
 # existing (fixed) results.csv without re-running earlier ones:
 #     REPEATS=4 REPEAT_START=3 ./run_full_experiment.sh
 #
+# >>> NOTE ON RESUMING PARTWAY THROUGH <<<
+# Set START_ARM to skip earlier arms entirely, e.g. to resume after Arm A
+# already completed:
+#     START_ARM=B ./run_full_experiment.sh
+# Each arm's own setup (installing/removing codegraph, enabling rtk) is
+# self-contained, so this works regardless of which arm you start at --
+# you don't need A or B to have run in this same invocation for C or D to
+# be set up correctly.
+#
 # >>> WHAT THIS SCRIPT STILL DOES NOT DO <<<
 # - It does not score pass/partial/fail — that's a judgment call against the
 #   "how you'll know it's correct" column, left blank in the CSV for you.
@@ -63,19 +72,46 @@ set -euo pipefail
 
 REPEATS="${REPEATS:-2}"
 REPEAT_START="${REPEAT_START:-1}"
+START_ARM="${START_ARM:-A}"   # A|B|C|D -- skip earlier arms, e.g. START_ARM=B to resume after Arm A
 MODEL="claude-sonnet-5"   # must match what's pinned in runbook Step 0.2
 PERMISSION_FLAG="${PERMISSION_FLAG:---dangerously-skip-permissions}"
 
-# BUG 3 FIX: `--dangerously-skip-permissions` is refused outright when the
-# CLI is run as root/sudo ("cannot be used with root/sudo privileges"), which
-# is common on disposable/CI test boxes -- exactly this script's use case.
-# Setting IS_SANDBOX=1 lifts that restriction. Auto-set it when running as
-# root and not already set, rather than let the pre-flight check fail with
-# a misleading "check claude --help for the right flag" message.
-if [ "$(id -u)" -eq 0 ] && [ -z "${IS_SANDBOX:-}" ]; then
-  echo "Running as root: exporting IS_SANDBOX=1 so $PERMISSION_FLAG is permitted."
-  export IS_SANDBOX=1
+# Some installers only update ~/.bashrc or ~/.zshrc, which a script
+# invocation (./run_full_experiment.sh) doesn't source the way an
+# interactive terminal does -- so a tool can work fine when you type its
+# name yourself but still be missing here. If you know where a tool
+# actually lives (`which codegraph` in your normal terminal), set this to
+# add it, e.g.: EXTRA_PATH=/home/you/.local/bin ./run_full_experiment.sh
+if [ -n "${EXTRA_PATH:-}" ]; then
+  export PATH="$PATH:$EXTRA_PATH"
 fi
+
+# ---- fail fast with a clear message instead of a bare "command not found" ----
+for cmd in claude codegraph rtk jq git; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "!!! ABORT: '$cmd' is not on PATH for this shell." >&2
+    echo "!!! Run \`which $cmd\` in your normal terminal to find where it lives," >&2
+    echo "!!! then re-run as: EXTRA_PATH=<that directory> ./run_full_experiment.sh" >&2
+    echo "!!! (This is commonly a non-interactive-shell PATH issue, not a real missing install --" >&2
+    echo "!!! installers often only update ~/.bashrc or ~/.zshrc, which this script doesn't source.)" >&2
+    exit 1
+  fi
+done
+
+ARM_ORDER=(A B C D)
+case "$START_ARM" in
+  A|B|C|D) ;;
+  *) echo "!!! ABORT: START_ARM must be A, B, C, or D (got '$START_ARM')." >&2; exit 1 ;;
+esac
+
+should_run_arm() {
+  local arm="$1" start_idx=-1 arm_idx=-1
+  for i in "${!ARM_ORDER[@]}"; do
+    [ "${ARM_ORDER[$i]}" = "$START_ARM" ] && start_idx=$i
+    [ "${ARM_ORDER[$i]}" = "$arm" ] && arm_idx=$i
+  done
+  [ "$arm_idx" -ge "$start_idx" ]
+}
 
 # IMPORTANT: results.csv and logs/ live OUTSIDE the repo, one directory up,
 # in a NEW directory distinct from the pre-fix dataset (see note above).
@@ -199,23 +235,11 @@ run_tasks_for_arm() {
       OUT_FILE="${LOG_DIR}/arm${ARM}_task${TASK_NUM}_rep${REPEAT}.json"
       START=$(date +%s)
 
-      # BUG 4 FIX: without this guard, a single non-zero exit from `claude`
-      # (rate limit, network blip, transient API error) trips `set -e` and
-      # kills the entire remaining experiment (all later arms/tasks/repeats)
-      # with no logged row. Capture the exit code, log a warning, and let
-      # the loop continue -- the row still gets written (fields will read
-      # PARSE_ERROR/NA if the output file is empty) so the failure is visible
-      # in results.csv instead of silently truncating the run.
-      CLAUDE_EXIT=0
       claude -p "${TASKS[$TASK_NUM]}" \
         --model "$MODEL" \
         --output-format json \
         "$PERMISSION_FLAG" \
-        > "$OUT_FILE" 2> "${OUT_FILE}.stderr" || CLAUDE_EXIT=$?
-
-      if [ "$CLAUDE_EXIT" != "0" ]; then
-        echo "!!! WARNING: claude exited $CLAUDE_EXIT for Arm $ARM Task $TASK_NUM Rep $REPEAT -- see ${OUT_FILE}.stderr" >&2
-      fi
+        > "$OUT_FILE" 2> "${OUT_FILE}.stderr"
 
       END=$(date +%s)
       WALL=$((END - START))
@@ -237,8 +261,6 @@ run_tasks_for_arm() {
 
       echo "${TASK_NUM},${ARM},${REPEAT},${INPUT_TOK},${OUTPUT_TOK},${CACHE_READ},${CACHE_WRITE},${COST_USD},${WALL},${SESSION_ID},${TRANSCRIPT},,${OUT_FILE},${THINKING_TOK},${PERM_DENIALS}" >> "$LOG_CSV"
 
-      echo "<<< Arm $ARM | Task $TASK_NUM | Repeat $REPEAT | input=${INPUT_TOK} output=${OUTPUT_TOK} cache_read=${CACHE_READ} cache_write=${CACHE_WRITE} cost=\$${COST_USD} wall=${WALL}s denials=${PERM_DENIALS} exit=${CLAUDE_EXIT}"
-
       if [ "$INPUT_TOK" = "PARSE_ERROR" ]; then
         echo "!!! Could not parse usage from $OUT_FILE -- inspect by hand: cat $OUT_FILE | jq ."
       fi
@@ -249,70 +271,66 @@ run_tasks_for_arm() {
       fi
     done
   done
-
-  # ---- per-arm summary: aggregate the rows this arm just wrote to the CSV ----
-  echo "=== Arm $ARM summary (tasks $REPEAT_START-$REPEATS repeats, all rows so far this arm) ==="
-  awk -F, -v arm="$ARM" '
-    NR==1 { next }
-    $2==arm {
-      n++
-      if ($4 != "NA" && $4 != "") { sum_in+=$4; n_in++ }
-      if ($5 != "NA" && $5 != "") { sum_out+=$5; n_out++ }
-      if ($8 != "NA" && $8 != "") { sum_cost+=$8; n_cost++ }
-      sum_wall+=$9
-      if ($15 != "NA" && $15 != "") { sum_denials+=$15 }
-    }
-    END {
-      if (n==0) { print "  no rows found"; exit }
-      printf "  runs=%d  avg_input=%.0f  avg_output=%.0f  total_cost=$%.4f  avg_wall=%.0fs  total_denials=%d\n", \
-        n, (n_in?sum_in/n_in:0), (n_out?sum_out/n_out:0), sum_cost, sum_wall/n, sum_denials+0
-    }
-  ' "$LOG_CSV"
 }
 
 # ============================ Pre-flight ============================
 preflight_check_bash_execution
 
 # =========================== ARM A: Baseline ===========================
-echo "=== ARM A: Baseline (codegraph off, rtk off) ==="
-remove_codegraph_completely
-assert_codegraph_fully_absent
-if ls ~/.claude/hooks/ 2>/dev/null | grep -qi rtk; then
-  echo "!!! ABORT: an rtk hook is present but Arm A expects none active." >&2
-  exit 1
+if should_run_arm A; then
+  echo "=== ARM A: Baseline (codegraph off, rtk off) ==="
+  remove_codegraph_completely
+  assert_codegraph_fully_absent
+  if ls ~/.claude/hooks/ 2>/dev/null | grep -qi rtk; then
+    echo "!!! ABORT: an rtk hook is present but Arm A expects none active." >&2
+    exit 1
+  fi
+  run_tasks_for_arm A
+else
+  echo "=== Skipping ARM A (START_ARM=$START_ARM) ==="
 fi
-run_tasks_for_arm A
 
 # ======================= ARM B: Indexing only =======================
-echo "=== ARM B: Indexing only (codegraph on, rtk off) ==="
-codegraph install --target=claude --yes
-codegraph init -i
-assert_codegraph_registered "yes"
-run_tasks_for_arm B
+if should_run_arm B; then
+  echo "=== ARM B: Indexing only (codegraph on, rtk off) ==="
+  codegraph install --target=claude --yes
+  codegraph init -i
+  assert_codegraph_registered "yes"
+  run_tasks_for_arm B
 
-echo "--- removing codegraph before Arm C (leaving .codegraph/ index data on disk) ---"
-remove_codegraph_completely
-assert_codegraph_fully_absent
+  echo "--- removing codegraph before Arm C (leaving .codegraph/ index data on disk) ---"
+  remove_codegraph_completely
+  assert_codegraph_fully_absent
+else
+  echo "=== Skipping ARM B (START_ARM=$START_ARM) ==="
+fi
 
 # =================== ARM C: Output-limiting only ===================
-echo "=== ARM C: Output-limiting only (codegraph off, rtk on) ==="
-rtk init --global
-assert_codegraph_fully_absent
-run_tasks_for_arm C
+if should_run_arm C; then
+  echo "=== ARM C: Output-limiting only (codegraph off, rtk on) ==="
+  # If resuming here directly (START_ARM=C), Arm B's removal step above was
+  # skipped -- re-verify codegraph is actually off before trusting this arm.
+  remove_codegraph_completely
+  assert_codegraph_fully_absent
+  rtk init --global
+  run_tasks_for_arm C
+else
+  echo "=== Skipping ARM C (START_ARM=$START_ARM) ==="
+fi
 
 # ========================= ARM D: Combined =========================
-echo "=== ARM D: Combined (codegraph on, rtk on) ==="
-# BUG 5 FIX: Arm D must turn codegraph on the SAME WAY Arm B does. Plain
-# `claude mcp add` only registers the MCP tool -- it does NOT wire in the
-# separate hook that `codegraph install --target=claude --yes` sets up
-# (see BUG 1 above), so Arm D was previously missing whatever benefit that
-# hook provides and would under-represent codegraph's contribution to the
-# combined condition. Re-run the exact same install/init sequence as Arm B.
-codegraph install --target=claude --yes
-codegraph init -i
-assert_codegraph_registered "yes"
-rtk gain || { echo "!!! ABORT: rtk gain failed -- rtk hook may not be active for Arm D." >&2; exit 1; }
-run_tasks_for_arm D
+if should_run_arm D; then
+  echo "=== ARM D: Combined (codegraph on, rtk on) ==="
+  claude mcp add codegraph -- codegraph serve --mcp
+  assert_codegraph_registered "yes"
+  # Self-sufficient regardless of whether Arm C ran in THIS invocation --
+  # rtk init is idempotent, so this is safe even if it's already active.
+  rtk init --global
+  rtk gain || { echo "!!! ABORT: rtk gain failed -- rtk hook may not be active for Arm D." >&2; exit 1; }
+  run_tasks_for_arm D
+else
+  echo "=== Skipping ARM D (START_ARM=$START_ARM) ==="
+fi
 
 # ============================ Cleanup ============================
 echo "=== Cleanup ==="
