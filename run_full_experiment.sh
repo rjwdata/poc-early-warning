@@ -237,6 +237,8 @@ run_tasks_for_arm() {
 
       echo "${TASK_NUM},${ARM},${REPEAT},${INPUT_TOK},${OUTPUT_TOK},${CACHE_READ},${CACHE_WRITE},${COST_USD},${WALL},${SESSION_ID},${TRANSCRIPT},,${OUT_FILE},${THINKING_TOK},${PERM_DENIALS}" >> "$LOG_CSV"
 
+      echo "<<< Arm $ARM | Task $TASK_NUM | Repeat $REPEAT | input=${INPUT_TOK} output=${OUTPUT_TOK} cache_read=${CACHE_READ} cache_write=${CACHE_WRITE} cost=\$${COST_USD} wall=${WALL}s denials=${PERM_DENIALS} exit=${CLAUDE_EXIT}"
+
       if [ "$INPUT_TOK" = "PARSE_ERROR" ]; then
         echo "!!! Could not parse usage from $OUT_FILE -- inspect by hand: cat $OUT_FILE | jq ."
       fi
@@ -247,6 +249,25 @@ run_tasks_for_arm() {
       fi
     done
   done
+
+  # ---- per-arm summary: aggregate the rows this arm just wrote to the CSV ----
+  echo "=== Arm $ARM summary (tasks $REPEAT_START-$REPEATS repeats, all rows so far this arm) ==="
+  awk -F, -v arm="$ARM" '
+    NR==1 { next }
+    $2==arm {
+      n++
+      if ($4 != "NA" && $4 != "") { sum_in+=$4; n_in++ }
+      if ($5 != "NA" && $5 != "") { sum_out+=$5; n_out++ }
+      if ($8 != "NA" && $8 != "") { sum_cost+=$8; n_cost++ }
+      sum_wall+=$9
+      if ($15 != "NA" && $15 != "") { sum_denials+=$15 }
+    }
+    END {
+      if (n==0) { print "  no rows found"; exit }
+      printf "  runs=%d  avg_input=%.0f  avg_output=%.0f  total_cost=$%.4f  avg_wall=%.0fs  total_denials=%d\n", \
+        n, (n_in?sum_in/n_in:0), (n_out?sum_out/n_out:0), sum_cost, sum_wall/n, sum_denials+0
+    }
+  ' "$LOG_CSV"
 }
 
 # ============================ Pre-flight ============================
@@ -281,7 +302,14 @@ run_tasks_for_arm C
 
 # ========================= ARM D: Combined =========================
 echo "=== ARM D: Combined (codegraph on, rtk on) ==="
-claude mcp add codegraph -- codegraph serve --mcp
+# BUG 5 FIX: Arm D must turn codegraph on the SAME WAY Arm B does. Plain
+# `claude mcp add` only registers the MCP tool -- it does NOT wire in the
+# separate hook that `codegraph install --target=claude --yes` sets up
+# (see BUG 1 above), so Arm D was previously missing whatever benefit that
+# hook provides and would under-represent codegraph's contribution to the
+# combined condition. Re-run the exact same install/init sequence as Arm B.
+codegraph install --target=claude --yes
+codegraph init -i
 assert_codegraph_registered "yes"
 rtk gain || { echo "!!! ABORT: rtk gain failed -- rtk hook may not be active for Arm D." >&2; exit 1; }
 run_tasks_for_arm D
