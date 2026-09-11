@@ -4,6 +4,7 @@
 
 import os
 import sys
+import subprocess
 import pandas as pd
 from dataclasses import dataclass
 import json
@@ -25,6 +26,27 @@ from src.config_loader import get_config
 config_path = os.path.join("config", "params.yaml")
 config = get_config(config_path)
 
+def _resolve_xgboost_device() -> str:
+    """Picks 'cuda' for xgboost when a GPU is present, else 'cpu'.
+
+    Override with XGBOOST_DEVICE=cuda|cpu to skip detection (e.g. on a
+    machine where nvidia-smi works but the CUDA build of xgboost isn't
+    installed).
+    """
+    override = os.environ.get("XGBOOST_DEVICE")
+    if override:
+        return override
+    try:
+        result = subprocess.run(
+            ["nvidia-smi"], capture_output=True, timeout=5, check=False
+        )
+        if result.returncode == 0:
+            return "cuda"
+    except (FileNotFoundError, subprocess.SubprocessError):
+        pass
+    return "cpu"
+
+
 @dataclass
 class ModelTrainerConfig:
     trained_model_file_path=os.path.join("artifacts","model.pkl")
@@ -36,6 +58,7 @@ class ModelTrainer:
 
     def initiate_model_trainer(self,train_array,test_array):
         try:
+            logging.info(f"xgboost will train on device={_resolve_xgboost_device()}")
             logging.info("Split training and test input data")
             X_train,y_train,X_test,y_test=(
                 train_array[:,:-1],
@@ -52,7 +75,12 @@ class ModelTrainer:
                     'random_forest': lambda: RandomForestClassifier(),
                     'naive_bayes': lambda: GaussianNB(),
                     'knn': lambda: KNeighborsClassifier(),
-                    'xgboost': lambda: xgb.XGBClassifier(objective="binary:logistic", random_state=42)
+                    'xgboost': lambda: xgb.XGBClassifier(
+                        objective="binary:logistic",
+                        random_state=42,
+                        tree_method="hist",
+                        device=_resolve_xgboost_device(),
+                    )
                 }
 
                 if model_name not in model_registry:
