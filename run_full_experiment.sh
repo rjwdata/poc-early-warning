@@ -33,7 +33,7 @@ LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
 
 if [ ! -f "$LOG_CSV" ]; then
-  echo "task,arm,repeat,input_tokens,output_tokens,cache_read_tokens,cache_write_tokens,wall_seconds,session_id,transcript_path,pass_fail,output_file" > "$LOG_CSV"
+  echo "task,arm,repeat,input_tokens,output_tokens,cache_read_tokens,cache_write_tokens,cost_usd,wall_seconds,session_id,transcript_path,pass_fail,output_file" > "$LOG_CSV"
 fi
 
 declare -A TASKS
@@ -82,11 +82,14 @@ run_tasks_for_arm() {
       END=$(date +%s)
       WALL=$((END - START))
 
-      INPUT_TOK=$(jq '.usage.input_tokens // .usage.inputTokens // "NA"' "$OUT_FILE" 2>/dev/null || echo "PARSE_ERROR")
-      OUTPUT_TOK=$(jq '.usage.output_tokens // .usage.outputTokens // "NA"' "$OUT_FILE" 2>/dev/null || echo "PARSE_ERROR")
+      # Field paths confirmed by hand against a live `claude -p ... --output-format json`
+      # sanity check on this installed CLI version -- no fallbacks needed, they matched exactly.
+      INPUT_TOK=$(jq '.usage.input_tokens // "NA"' "$OUT_FILE" 2>/dev/null || echo "PARSE_ERROR")
+      OUTPUT_TOK=$(jq '.usage.output_tokens // "NA"' "$OUT_FILE" 2>/dev/null || echo "PARSE_ERROR")
       CACHE_READ=$(jq '.usage.cache_read_input_tokens // "NA"' "$OUT_FILE" 2>/dev/null || echo "NA")
       CACHE_WRITE=$(jq '.usage.cache_creation_input_tokens // "NA"' "$OUT_FILE" 2>/dev/null || echo "NA")
       SESSION_ID=$(jq -r '.session_id // "NA"' "$OUT_FILE" 2>/dev/null || echo "NA")
+      COST_USD=$(jq '.total_cost_usd // "NA"' "$OUT_FILE" 2>/dev/null || echo "NA")
 
       TRANSCRIPT="NA"
       if [ "$SESSION_ID" != "NA" ]; then
@@ -94,7 +97,7 @@ run_tasks_for_arm() {
         [ -n "$FOUND" ] && TRANSCRIPT="$FOUND"
       fi
 
-      echo "${TASK_NUM},${ARM},${REPEAT},${INPUT_TOK},${OUTPUT_TOK},${CACHE_READ},${CACHE_WRITE},${WALL},${SESSION_ID},${TRANSCRIPT},,${OUT_FILE}" >> "$LOG_CSV"
+      echo "${TASK_NUM},${ARM},${REPEAT},${INPUT_TOK},${OUTPUT_TOK},${CACHE_READ},${CACHE_WRITE},${COST_USD},${WALL},${SESSION_ID},${TRANSCRIPT},,${OUT_FILE}" >> "$LOG_CSV"
 
       if [ "$INPUT_TOK" = "PARSE_ERROR" ]; then
         echo "!!! Could not parse usage from $OUT_FILE -- inspect by hand: cat $OUT_FILE | jq ."
