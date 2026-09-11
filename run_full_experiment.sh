@@ -28,8 +28,15 @@ set -euo pipefail
 
 REPEATS="${REPEATS:-2}"
 MODEL="claude-sonnet-5"   # must match what's pinned in runbook Step 0.2
-LOG_CSV="results.csv"
-LOG_DIR="logs"
+
+# IMPORTANT: results.csv and logs/ live OUTSIDE the repo, one directory up.
+# The per-run reset (`git checkout . && git clean -fd`) deletes every untracked
+# file/dir inside the repo -- if these lived inside it, the very first reset
+# would wipe them out from under the script.
+REPO_ROOT="$(pwd)"
+OUT_ROOT="$(dirname "$REPO_ROOT")/token-reduction-output"
+LOG_DIR="$OUT_ROOT/logs"
+LOG_CSV="$OUT_ROOT/results.csv"
 mkdir -p "$LOG_DIR"
 
 if [ ! -f "$LOG_CSV" ]; then
