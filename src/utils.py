@@ -107,6 +107,41 @@ def load_object(file_path):
         raise CustomException(e, sys)
 
 
+def engineer_features(df):
+    """
+    Adds derived predictive features to a raw feature dataframe.
+
+    This must be called identically at training time (before fitting the
+    preprocessor) and at inference time (before calling
+    preprocessor.transform), so the fitted ColumnTransformer always sees the
+    same set of columns. New columns should only be added here when the
+    source columns they depend on are present.
+
+    Currently derives:
+        attendance_rate: 100 - pct_days_absent. A student's percent of
+            school days attended, which is more directly interpretable as a
+            "higher is better" academic-engagement signal than the raw
+            absence percentage.
+
+    Args:
+        df (pd.DataFrame): Input dataframe (train, test, or single-row
+            prediction input).
+
+    Returns:
+        pd.DataFrame: Copy of df with derived feature columns added.
+    """
+    try:
+        df = df.copy()
+
+        if "pct_days_absent" in df.columns:
+            df["attendance_rate"] = 100 - df["pct_days_absent"]
+
+        return df
+
+    except Exception as e:
+        raise CustomException(e, sys)
+
+
 ## streamlit app functions     
 def list_periods(reports_dir: Path) -> List[Text]:
     """List periods subdirectories inside reports directory.

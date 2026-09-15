@@ -13,7 +13,7 @@ from src.exception import CustomException
 from src.logger import logging
 import os
 
-from src.utils import save_object
+from src.utils import save_object, engineer_features
 
 @dataclass
 class DataTransformationConfig:
@@ -69,7 +69,11 @@ class DataTransformation:
             test_df=pd.read_csv(test_path)
 
             logging.info(f'Read train and test data completed {train_path}')
-            
+
+            logging.info("Engineering derived features")
+            train_df = engineer_features(train_df)
+            test_df = engineer_features(test_df)
+
             logging.info("Extract input and target features started")
             target_column_name="hs_diploma"
 

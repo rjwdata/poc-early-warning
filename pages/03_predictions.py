@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from src.ui_components.styling import apply_custom_css
 from src.pipeline.predict_pipeline import PredictPipeline
+from src.utils import engineer_features
 
 # Apply custom styling
 apply_custom_css()
@@ -395,7 +396,8 @@ if predict_button or 'prediction_made' in st.session_state:
 
             with col3:
                 st.markdown("**Attendance & Support**")
-                st.write(f"• Attendance Rate: {100 - user_input_dict['pct_days_absent']:.1f}%")
+                engineered_input = engineer_features(user_input_df)
+                st.write(f"• Attendance Rate (model feature): {engineered_input['attendance_rate'].iloc[0]:.1f}%")
                 st.write(f"• IEP Services: {user_input_dict['iep'].title()}")
                 st.write(f"• ELL Services: {user_input_dict['ell'].title()}")
                 st.write(f"• FRPL: {user_input_dict['frpl'].title()}")

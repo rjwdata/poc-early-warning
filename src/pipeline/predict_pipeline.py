@@ -3,7 +3,7 @@ import os
 import sys
 import pandas as pd
 from src.exception import CustomException
-from src.utils import load_object
+from src.utils import load_object, engineer_features
 from src.logger import logging
 
 class PredictPipeline:
@@ -42,6 +42,9 @@ class PredictPipeline:
         try:
             # Validate input data
             self.validate_input(data)
+
+            logging.info('Engineering derived features')
+            data = engineer_features(data)
 
             logging.info('Loading model and preprocessor')
             model_path=os.path.join("artifacts","model.pkl")

@@ -12,6 +12,8 @@ import joblib
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from src.utils import engineer_features
+
 
 def generate_test_predictions():
     """Generate and cache test predictions."""
@@ -30,6 +32,9 @@ def generate_test_predictions():
         # Separate features and target
         X_test = test_df.drop('hs_diploma', axis=1)
         y_test = test_df['hs_diploma']
+
+        # Apply the same derived features used at training time
+        X_test = engineer_features(X_test)
 
         # Transform and predict
         X_transformed = preprocessor.transform(X_test)

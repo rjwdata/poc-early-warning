@@ -43,7 +43,8 @@ NUMERIC_FEATURES = [
     "scale_score_11_eng",
     "scale_score_11_math",
     "scale_score_11_read",
-    "scale_score_11_comp"
+    "scale_score_11_comp",
+    "attendance_rate"  # derived in src.utils.engineer_features
 ]
 
 CATEGORICAL_FEATURES = [
