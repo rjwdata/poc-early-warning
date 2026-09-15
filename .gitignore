@@ -160,7 +160,6 @@ cython_debug/
 #.idea/
 
 data/processed/
-data/raw/
 config/params.yaml
 notebooks/param_test.ipynb
 
